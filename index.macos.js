@@ -432,7 +432,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: positive,
     fontWeight: 'bold',
-    marginBottom: 15,
     color: sizeColor,
   },
   button: {
@@ -492,6 +491,7 @@ const styles = StyleSheet.create({
   headerWithBadge: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: 20,
     marginBottom: 10,
   },
   compactHeader: {
