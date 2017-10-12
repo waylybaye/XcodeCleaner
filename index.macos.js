@@ -135,16 +135,35 @@ export default class XcodeCleaner extends Component {
       })
     }
 
+    if (progressKey === 'simulator'){
+      for(let i=0; i<groups.length; i++){
+        try{
+          let simulator = groups[i];
+          let simulatorPath = simulator.path;
+          let contents = await FileManager.parsePlist(simulatorPath + '/device.plist');
 
-    // this.setState({
-    //   data: {
-    //     ...this.state.data,
-    //     [progressKey]: {
-    //       size: totalSize,
-    //       groups: groups,
-    //     }
-    //   }
-    // })
+          name = contents.name || contents.UDID;
+          runtime = (contents.runtime || '').split('.');
+          version = runtime[runtime.length - 1];
+          version = version.replace(/\d*-/g, '.').replace(/-/, ' ');
+
+          simulator.label = `${name} (${version})`;
+        } catch (e){
+          console.log('error', e);
+          continue;
+        }
+      }
+
+      this.setState({
+        data: {
+          ...this.state.data,
+          [progressKey]: {
+            size: totalSize,
+            groups: groups,
+          }
+        }
+      })
+    }
 
     return groups;
   }
@@ -158,6 +177,7 @@ export default class XcodeCleaner extends Component {
     await this.calculateSubDirectory(xcode + 'DerivedData/', 'derivedData');
     await this.calculateSubDirectory(xcode + 'Archives/', 'archives');
     await this.calculateSubDirectory(developer + 'CoreSimulator/Devices/', 'simulator');
+
   }
 
   async trashDirectory(groupKey, item) {
@@ -273,15 +293,6 @@ export default class XcodeCleaner extends Component {
 
           let count = data.groups ? data.groups.length : 0;
           let compactMode = this.state.tab && this.state.tab !== group.key;
-          // if (compactMode){
-          //   return <CompactSection 
-          //           key={'compact-' + group.key}
-          //           onPress={() => this.toggleTab(group.key)}
-          //           group={group} 
-          //           count={count} 
-          //           size={data.size}
-          //           />
-          // }
 
           return (
             <View style={[
@@ -311,12 +322,13 @@ export default class XcodeCleaner extends Component {
               </TouchableOpacity>
 
               <View style={{height: 20}}>
-                {progress && progressValue < 1 ? <ProgressViewIOS progress={progressValue} /> : null }
+                {progress && progressValue < 1 ? <ProgressViewIOS progressTintColor={sizeColor} progress={progressValue} /> : null }
               </View>
 
               {this.state.tab === group.key ? (
                 <FlatList
                   contentContainerStyle={styles.listContainer}
+                  // showsVerticalScrollIndicator={true}
                   style={styles.list}
                   data={data.groups}
                   keyExtractor={(item, index) => item.path}

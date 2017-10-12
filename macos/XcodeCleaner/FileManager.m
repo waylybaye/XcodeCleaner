@@ -38,6 +38,17 @@ RCT_REMAP_METHOD(getHomeDirectory,
 //  resolve(NSLibraryDirectory());
 //}
 
+RCT_EXPORT_METHOD(parsePlist: (NSString*) path
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+{
+//  NSArray *fileURLs = [NSArray arrayWithObjects:[NSURL fileURLWithPath:path isDirectory:YES], nil];
+  NSDictionary *theDict = [NSDictionary dictionaryWithContentsOfFile:path];
+  resolve(theDict);
+}
+
+
 RCT_EXPORT_METHOD(revealInFinder: (NSString*) path
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject
