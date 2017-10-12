@@ -81,7 +81,6 @@ RCT_EXPORT_METHOD(getDirectorySize:(NSString *)path
                   rejecter:(RCTPromiseRejectBlock)reject
                   )
 {
-  NSLog(@"calculate size %@", path);
   resolve([self sizeForFolderAtPath:path error:nil]);
 }
 

@@ -154,7 +154,7 @@ export default class XcodeCleaner extends Component {
 
     if (path){
       try{
-        // await FileManager.trashDirectory(path);
+        await FileManager.trashDirectory(path);
         let group = this.state.data[groupKey];
         let index = group.groups.indexOf(item);
 
@@ -243,7 +243,7 @@ export default class XcodeCleaner extends Component {
       <View style={styles.container}>
         <View style={[styles.row, styles.header]}>
           <Image 
-            source={{uri: 'logo'}}  
+            source={{uri: 'xc'}}  
             style={{width: 40, height: 40}}/>
           <Text style={styles.title}> Xcode Cleaner </Text>
         </View> 
