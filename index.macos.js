@@ -145,7 +145,7 @@ export default class XcodeCleaner extends Component {
           name = contents.name || contents.UDID;
           runtime = (contents.runtime || '').split('.');
           version = runtime[runtime.length - 1];
-          version = version.replace(/\d*-/g, '.').replace(/-/, ' ');
+          version = version.replace(/(\d+)-/g, '$1.').replace(/-/, ' ');
 
           simulator.label = `${name} (${version})`;
         } catch (e){
