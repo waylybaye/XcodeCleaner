@@ -19,6 +19,7 @@ import {
   Image,
   NativeModules,
   ActivityIndicator,
+  LayoutAnimation,
 } from 'react-native';
 
 
@@ -74,6 +75,10 @@ export default class XcodeCleaner extends Component {
       progress: {},
       tab: '',
     };
+  }
+
+  componentWillMount(){
+    LayoutAnimation.easeInEaseOut();
   }
 
   async componentDidMount(){
@@ -203,6 +208,7 @@ export default class XcodeCleaner extends Component {
   }
 
   toggleTab(tab){
+    LayoutAnimation.easeInEaseOut();
     this.setState({
       tab: this.state.tab === tab ? null : tab,
     });
@@ -237,8 +243,8 @@ export default class XcodeCleaner extends Component {
       <View style={styles.container}>
         <View style={[styles.row, styles.header]}>
           <Image 
-            source={{uri: 'AppIcon.icns'}}  
-            style={{width: 60, height: 60}}/>
+            source={{uri: 'logo'}}  
+            style={{width: 42, height: 42}}/>
           <Text style={styles.title}> Xcode Cleaner </Text>
         </View> 
 
@@ -255,15 +261,15 @@ export default class XcodeCleaner extends Component {
 
           let count = data.groups ? data.groups.length : 0;
           let compactMode = this.state.tab && this.state.tab !== group.key;
-          if (compactMode){
-            return <CompactSection 
-                    key={'compact-' + group.key}
-                    onPress={() => this.toggleTab(group.key)}
-                    group={group} 
-                    count={count} 
-                    size={data.size}
-                    />
-          }
+          // if (compactMode){
+          //   return <CompactSection 
+          //           key={'compact-' + group.key}
+          //           onPress={() => this.toggleTab(group.key)}
+          //           group={group} 
+          //           count={count} 
+          //           size={data.size}
+          //           />
+          // }
 
           return (
             <View style={[
@@ -285,26 +291,16 @@ export default class XcodeCleaner extends Component {
                   </View>
 
                   <View style={styles.rowRight}>
-                  {/* 
-                    <Button 
-                      title='' 
-                      onPress={() => FileManager.revealInFinder(group.path)}
-                      bezelStyle='helpButton' />
-                  */}
                     {data.size ? (
-                    <Text style={styles.size}> {humanize(data.size)} </Text>
+                      <Text style={styles.size}> {humanize(data.size)} </Text>
                     ) : null}
-                    {/*
-                    // <Button title="Delete" />
-                    <TouchableOpacity style={styles.button}>
-                      <Text style={styles.buttonText}>Delete</Text>
-                    </TouchableOpacity>
-                    */}
                   </View>
                 </View>  
               </TouchableOpacity>
 
-              {progress && progressValue < 1 ? <ProgressViewIOS progress={progressValue} /> : null }
+              <View style={{height: 20}}>
+                {progress && progressValue < 1 ? <ProgressViewIOS progress={progressValue} /> : null }
+              </View>
 
               {this.state.tab === group.key ? (
                 <FlatList
@@ -388,7 +384,9 @@ const styles = StyleSheet.create({
   },
   rowLeft: {
     flex: 1,
-    marginBottom: 20,
+    marginBottom: 10,
+    height: 50,
+    justifyContent: 'space-between',
   },
   rowRight: {
     // width: 150,
