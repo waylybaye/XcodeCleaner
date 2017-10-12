@@ -6,8 +6,7 @@
 //  Copyright © 2017年 Facebook. All rights reserved.
 //
 
-#ifndef Header_h
-#define Header_h
+#import <React/RCTBridgeModule.h>
 
-
-#endif /* Header_h */
+@interface FileManager : NSObject <RCTBridgeModule>
+@end
