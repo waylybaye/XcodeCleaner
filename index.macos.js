@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 
 import { 
   AppRegistry, 
+  Dimensions,
   FlatList,
   StyleSheet, 
   Text, 
@@ -21,11 +22,16 @@ import {
 
 
 const {FileManager} = NativeModules;
+const window = Dimensions.get('window');
+console.log('windowSize', window);
+console.log('windowSize', Dimensions.get('screen'));
+// console.log('windowSize', Dimensions.get('app'));
 
 function removePrefix(fullpath, path){
   let endingSlash = path[path.length - 1] === '/';
   return fullpath.substr(endingSlash ? path.length : path.length + 1);
 }
+
 
 export default class XcodeCleaner extends Component {
   constructor(props){
@@ -70,6 +76,7 @@ export default class XcodeCleaner extends Component {
       totalSize += size;
 
       groups.push({
+        path: folder,
         label: label,
         size: size,
       });
@@ -102,9 +109,9 @@ export default class XcodeCleaner extends Component {
 
   renderItem(item){
     return (
-      <View style={styles.row}>
-        <Text>{item.label}</Text>
-        <Text>{item.size}</Text>
+      <View style={styles.listItem}>
+        <Text style={styles.itemLabel}>{item.label}</Text>
+        <Text style={styles.itemSize}>{item.size}</Text>
       </View>  
     )
   }
@@ -120,31 +127,32 @@ export default class XcodeCleaner extends Component {
       {
         name: 'iOS DeviceSupport', 
         key: 'deviceSupport',
-        description: 'Clear this is safe.',
+        description: 'Only need to keep the latest iOS version.',
       },
       {
         name: 'DerivedData', 
         key: 'derivedData',
-        description: 'Clear this is safe.',
+        description: "It's safe to clear entire folder.",
       },
       {
         key: 'archives',
         name: 'Archives', 
-        description: 'Clear this is safe.',
+        description: "You can't debug crash logs if you removed old archives.",
       },
       {
         key: 'simulator',
         name: 'CoreSimulator', 
-        description: 'Clear this is safe.',
+        description: "It's safe to remove unused simulators.",
       }
     ];
 
+                    // <ActivityIndicator size='large' color='white' animating={true} />
 
     return (
       <View style={styles.container}>
-      <View style={{alignItems: 'center',}}>
-        <Text style={styles.title}> Xcode Cleaner </Text>
-      </View> 
+        <View style={{alignItems: 'center',}}>
+          <Text style={styles.title}> Xcode Cleaner </Text>
+        </View> 
 
         {groups.map((item, idx) => {
           let data = this.state.data[item.key] || {};
@@ -156,25 +164,30 @@ export default class XcodeCleaner extends Component {
             let total = progress[1];
             progressValue = total === 0 ? 1 : (current / total);
           }
+          let compactMode = this.state.tab && this.state.tab !== item.key;
 
           return (
-            <View style={styles.section} key={'group' + idx}>
+            <View style={[
+              styles.section,
+              this.state.tab && this.state.tab !== item.key && styles.inactiveTab,
+              this.state.tab && this.state.tab === item.key && styles.activeTab,
+            ]} key={'group' + idx}>
               <TouchableOpacity onPress={() => this.toggleTab(item.key)}>
-                <View style={styles.row}>
-
+                <View style={[
+                  styles.row, 
+                  styles.sectionHeader,
+                ]}>
                   <View style={styles.rowLeft}>
                     <Text style={styles.name}>{item.name}</Text>
-                    <Text style={styles.description}>{item.description}</Text>
-                    {progress && progressValue < 1 ? <ProgressViewIOS progress={progressValue} /> : null }
+                    {!compactMode && <Text style={styles.description}>{item.description}</Text> }
                   </View>
 
                   <View style={styles.rowRight}>
-                    <ActivityIndicator size='large' color='white' animating={true} />
                     {data.size ? (
                     <Text style={styles.size}> {data.size} </Text>
                     ) : null}
-                    <Button title="Delete" />
                     {/*
+                    // <Button title="Delete" />
                     <TouchableOpacity style={styles.button}>
                       <Text style={styles.buttonText}>Delete</Text>
                     </TouchableOpacity>
@@ -183,9 +196,14 @@ export default class XcodeCleaner extends Component {
                 </View>  
               </TouchableOpacity>
 
+              {progress && progressValue < 1 ? <ProgressViewIOS progress={progressValue} /> : null }
+
               {this.state.tab === item.key ? (
                 <FlatList
+                  contentContainerStyle={styles.listContainer}
+                  style={styles.list}
                   data={data.groups}
+                  keyExtractor={(item, index) => item.path}
                   renderItem={({item}) => this.renderItem(item)}
                   />
               ) : null}
@@ -206,29 +224,40 @@ export default class XcodeCleaner extends Component {
 // const textColor = '#878ecd';
 // const positive = 'rgb(0, 162,235)';
 
-const backgroundColor = '#2E3B3E';
-const cardBackground = '#50666B';
+// const backgroundColor = '#2E3B3E';
+// const cardBackground = '#50666B';
 // const textColor = '#F9B8BE';
 // const positive = '#FD6378';
 
+const backgroundColor = 'transparent'
+// const cardBackground= 'rgb(255,78,93)'
+const cardBackground= 'transparent'
 const textColor = '#333';
+const secondaryTextColor = '#888';
 const positive = 'blue';
+// const fontFamily = 'sans-serif';
+const fontFamily = 'HelveticaNeue';
 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: backgroundColor,
+    justifyContent: 'space-between',
+    backgroundColor: backgroundColor,
   },
   section: {
-    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginHorizontal: 20,
     paddingVertical: 20,
-    marginBottom: 1,
-    borderBottomWidth: 1,
-    // backgroundColor: cardBackground,
+    // marginBottom: 1,
+    // borderBottomWidth: 1,
+    // backgroundColor: 'yellow',
+    backgroundColor: cardBackground,
     // borderWidth: 2,
     // borderColor: '#fff',
     // borderBottomColor: '#eee',
+  },
+  sectionHeader: {
   },
   row: {
     flexDirection: 'row',
@@ -243,10 +272,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   name: {
-    fontSize: 20,
+    fontSize: 18,
     color: textColor,
+    // color: backgroundColor,
+    fontFamily: fontFamily,
     marginBottom: 15,
   },
+  description: {
+    fontSize: 12,
+    color: secondaryTextColor,
+    fontFamily: fontFamily,
+  },
+
   size: {
     fontSize: 30,
     color: positive,
@@ -266,12 +303,36 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 20,
     fontWeight: 'bold',
+    fontFamily: fontFamily,
     // color: textColor,
-    color: '#fff',
+    color: '#333',
   },
-  description: {
-    color: textColor,
+  list: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#888',
   },
+  listContainer: {
+    backgroundColor: '#fff',
+  },
+  listItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  itemLabel: {
+    fontSize: 12,
+  },
+  itemSize: {
+    fontSize: 12,
+  },
+  activeTab: {
+    flex: 1,
+  },
+  inactiveTab: {
+    height: 40,
+  }
 });
 
 AppRegistry.registerComponent('XcodeCleaner', () => XcodeCleaner);

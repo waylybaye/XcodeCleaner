@@ -18,7 +18,7 @@
 -(id)init
 {
   if(self = [super init]) {
-    NSRect contentSize = NSMakeRect(200, 500, 1000, 500); // initial size of main NSWindow
+    NSRect contentSize = NSMakeRect(200, 500, 400, 500); // initial size of main NSWindow
 
     self.window = [[NSWindow alloc] initWithContentRect:contentSize
                                              styleMask:
@@ -32,7 +32,8 @@
 
     NSWindowController *windowController = [[NSWindowController alloc] initWithWindow:self.window];
 
-    [[self window] setTitleVisibility:NSWindowTitleHidden];
+//    [[self window] setTitleVisibility:NSWindowTitleHidden];
+    [[self window] setTitleVisibility:NSWindowTitleVisible];
     [[self window] setTitlebarAppearsTransparent:YES];
     [[self window] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameAqua]];
 
