@@ -249,13 +249,14 @@ export default class XcodeCleaner extends Component {
       }
     ];
 
-          // <Image 
-          //   source={{uri: 'xc'}}  
-          //   style={{width: 40, height: 40}}/>
 
     return (
       <View style={styles.container}>
         <View style={[styles.row, styles.header]}>
+          <Image 
+            source={{uri: 'AppIcon.icns'}}  
+            style={{width: 40, height: 40}}/>
+
           <Text style={styles.title}> Xcode Cleaner </Text>
         </View> 
 
@@ -408,7 +409,6 @@ const styles = StyleSheet.create({
     color: textColor,
     fontFamily: fontFamily,
     fontWeight: 'bold',
-    marginBottom: 10,
   },
   description: {
     fontSize: 12,
@@ -479,6 +479,7 @@ const styles = StyleSheet.create({
   headerWithBadge: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 10,
   },
   compactHeader: {
     // flex: 1,
