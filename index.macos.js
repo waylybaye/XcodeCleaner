@@ -88,6 +88,7 @@ export default class XcodeCleaner extends Component {
       data: {
         ...this.state.data,
         [progressKey]: {
+          size: totalSize,
           groups: groups,
         }
       }
@@ -107,7 +108,39 @@ export default class XcodeCleaner extends Component {
     await this.calculateSubDirectory(developer + 'CoreSimulator/Devices/', 'simulator');
   }
 
-  renderItem(item){
+  async trashDirectory(groupKey, item) {
+    let path = item.path;
+
+    if (path){
+      try{
+        // await FileManager.trashDirectory(path);
+        let group = this.state.data[groupKey];
+        let index = group.groups.indexOf(item);
+
+        if (!group || index === -1){
+          return;
+        }
+
+        let groups = group.groups.slice();
+        groups.splice(index, 1)
+
+        this.setState({
+          data: {
+            ...this.state.data,
+            [groupKey]: {
+              size: group.size - item.size,
+              groups: groups,
+            }
+          }
+        })
+
+      } catch (e){
+        console.log('errrr', e);
+      }
+    }
+  }
+
+  renderItem(item, groupKey){
     return (
       <View style={styles.listItem}>
         <Text style={styles.itemLabel}>{item.label}</Text>
@@ -116,6 +149,10 @@ export default class XcodeCleaner extends Component {
           title='' 
           onPress={() => FileManager.revealInFinder(item.path)}
           bezelStyle='helpButton' />
+        <Button 
+          title='Trash' 
+          onPress={() => this.trashDirectory(groupKey, item)}
+           />
       </View>  
     )
   }
@@ -158,9 +195,9 @@ export default class XcodeCleaner extends Component {
           <Text style={styles.title}> Xcode Cleaner </Text>
         </View> 
 
-        {groups.map((item, idx) => {
-          let data = this.state.data[item.key] || {};
-          let progress = this.state.progress[item.key];
+        {groups.map((group, idx) => {
+          let data = this.state.data[group.key] || {};
+          let progress = this.state.progress[group.key];
           let progressValue = 0;
 
           if (progress){
@@ -168,28 +205,28 @@ export default class XcodeCleaner extends Component {
             let total = progress[1];
             progressValue = total === 0 ? 1 : (current / total);
           }
-          let compactMode = this.state.tab && this.state.tab !== item.key;
+          let compactMode = this.state.tab && this.state.tab !== group.key;
 
           return (
             <View style={[
               styles.section,
-              this.state.tab && this.state.tab !== item.key && styles.inactiveTab,
-              this.state.tab && this.state.tab === item.key && styles.activeTab,
+              this.state.tab && this.state.tab !== group.key && styles.inactiveTab,
+              this.state.tab && this.state.tab === group.key && styles.activeTab,
             ]} key={'group' + idx}>
-              <TouchableOpacity onPress={() => this.toggleTab(item.key)}>
+              <TouchableOpacity onPress={() => this.toggleTab(group.key)}>
                 <View style={[
                   styles.row, 
                   styles.sectionHeader,
                 ]}>
                   <View style={styles.rowLeft}>
-                    <Text style={styles.name}>{item.name}</Text>
-                    {!compactMode && <Text style={styles.description}>{item.description}</Text> }
+                    <Text style={styles.name}>{group.name}</Text>
+                    {!compactMode && <Text style={styles.description}>{group.description}</Text> }
                   </View>
 
                   <View style={styles.rowRight}>
                     <Button 
                       title='' 
-                      onPress={() => FileManager.revealInFinder(item.path)}
+                      onPress={() => FileManager.revealInFinder(group.path)}
                       bezelStyle='helpButton' />
                     {data.size ? (
                     <Text style={styles.size} 
@@ -207,13 +244,13 @@ export default class XcodeCleaner extends Component {
 
               {progress && progressValue < 1 ? <ProgressViewIOS progress={progressValue} /> : null }
 
-              {this.state.tab === item.key ? (
+              {this.state.tab === group.key ? (
                 <FlatList
                   contentContainerStyle={styles.listContainer}
                   style={styles.list}
                   data={data.groups}
                   keyExtractor={(item, index) => item.path}
-                  renderItem={({item}) => this.renderItem(item)}
+                  renderItem={({item}) => this.renderItem(item, group.key)}
                   />
               ) : null}
             </View>  
@@ -331,6 +368,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   itemLabel: {
+    flex: 1,
     fontSize: 12,
   },
   itemSize: {
