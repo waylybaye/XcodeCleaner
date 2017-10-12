@@ -16,6 +16,7 @@ import {
   TouchableOpacity, 
   ProgressViewIOS,
   Button,
+  Image,
   NativeModules,
   ActivityIndicator,
 } from 'react-native';
@@ -30,6 +31,19 @@ console.log('windowSize', Dimensions.get('screen'));
 function removePrefix(fullpath, path){
   let endingSlash = path[path.length - 1] === '/';
   return fullpath.substr(endingSlash ? path.length : path.length + 1);
+}
+
+
+function humanize(value, decimal) {
+  value = value || 0;
+  let i = -1;
+  let byteUnits = ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  do {
+    value = value / 1024;
+    i++;
+  } while (value > 1024);
+
+  return value.toFixed(decimal || 0) + byteUnits[i][0];
 }
 
 
@@ -144,7 +158,7 @@ export default class XcodeCleaner extends Component {
     return (
       <View style={styles.listItem}>
         <Text style={styles.itemLabel}>{item.label}</Text>
-        <Text style={styles.itemSize}>{item.size}</Text>
+        <Text style={styles.itemSize}>{humanize(item.size)}</Text>
         <Button 
           title='' 
           onPress={() => FileManager.revealInFinder(item.path)}
@@ -229,8 +243,7 @@ export default class XcodeCleaner extends Component {
                       onPress={() => FileManager.revealInFinder(group.path)}
                       bezelStyle='helpButton' />
                     {data.size ? (
-                    <Text style={styles.size} 
-                          > {data.size} </Text>
+                    <Text style={styles.size}> {humanize(data.size)} </Text>
                     ) : null}
                     {/*
                     // <Button title="Delete" />
@@ -360,12 +373,13 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     backgroundColor: '#fff',
+    padding: 10,
   },
   listItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
     paddingVertical: 5,
+    alignItems: 'center',
   },
   itemLabel: {
     flex: 1,
