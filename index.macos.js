@@ -8,10 +8,12 @@ import React, { Component } from 'react';
 
 import { 
   AppRegistry, 
+  FlatList,
   StyleSheet, 
   Text, 
   View, 
   TouchableOpacity, 
+  ProgressViewIOS,
   Button,
   NativeModules,
   ActivityIndicator,
@@ -30,7 +32,7 @@ export default class XcodeCleaner extends Component {
     super(props);
 
     this.state = {
-      groups: [],
+      data: {},
       progress: {},
     };
   }
@@ -120,24 +122,37 @@ export default class XcodeCleaner extends Component {
       </View> 
 
         {groups.map((item, idx) => {
+          let data = this.state.data[item.key] || {};
+          let progress = this.state.progress[item.key];
+          let progressValue = 0;
+
+          if (progress){
+            let current = progress[0];
+            let total = progress[1];
+            progressValue = total === 0 ? 1 : (current / total);
+          }
+
           return (
             <View style={styles.row} key={'group' + idx}>
-            <View style={styles.rowLeft}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.description}>{item.description}</Text>
-            </View>
+              <View style={styles.rowLeft}>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.description}>{item.description}</Text>
+                {progress && progressValue < 1 ? <ProgressViewIOS progress={progressValue} /> : null }
+              </View>
 
-            <View style={styles.rowRight}>
-              <ActivityIndicator size='large' color='white' animating={true} />
-              <Text style={styles.size}> 40 G </Text>
-              <Button title="Delete" />
-              {/*
-              <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Delete</Text>
-              </TouchableOpacity>
-               */}
-            </View>
-          </View>  
+              <View style={styles.rowRight}>
+                <ActivityIndicator size='large' color='white' animating={true} />
+                {data.size ? (
+                <Text style={styles.size}> {data.size} </Text>
+                ) : null}
+                <Button title="Delete" />
+                {/*
+                <TouchableOpacity style={styles.button}>
+                  <Text style={styles.buttonText}>Delete</Text>
+                </TouchableOpacity>
+                */}
+              </View>
+            </View>  
           )
         })}
       </View>
@@ -156,19 +171,20 @@ export default class XcodeCleaner extends Component {
 
 const backgroundColor = '#2E3B3E';
 const cardBackground = '#50666B';
-const textColor = '#F9B8BE';
-const positive = '#FD6378';
+// const textColor = '#F9B8BE';
+// const positive = '#FD6378';
 
-
+const textColor = '#333';
+const positive = 'blue';
 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: backgroundColor,
+    // backgroundColor: backgroundColor,
   },
   row: {
-    backgroundColor: cardBackground,
+    // backgroundColor: cardBackground,
     paddingHorizontal: 20,
     paddingVertical: 20,
     marginBottom: 1,
