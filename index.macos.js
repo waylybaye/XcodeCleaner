@@ -34,6 +34,7 @@ export default class XcodeCleaner extends Component {
     this.state = {
       data: {},
       progress: {},
+      tab: '',
     };
   }
 
@@ -76,6 +77,15 @@ export default class XcodeCleaner extends Component {
       this.updateProgress(progressKey, i + 1, folders.length);
     }
 
+    this.setState({
+      data: {
+        ...this.state.data,
+        [progressKey]: {
+          groups: groups,
+        }
+      }
+    })
+
     return groups;
   }
 
@@ -88,6 +98,21 @@ export default class XcodeCleaner extends Component {
     await this.calculateSubDirectory(xcode + 'DerivedData/', 'derivedData');
     await this.calculateSubDirectory(xcode + 'Archives/', 'archives');
     await this.calculateSubDirectory(developer + 'CoreSimulator/Devices/', 'simulator');
+  }
+
+  renderItem(item){
+    return (
+      <View style={styles.row}>
+        <Text>{item.label}</Text>
+        <Text>{item.size}</Text>
+      </View>  
+    )
+  }
+
+  toggleTab(tab){
+    this.setState({
+      tab: this.state.tab === tab ? null : tab,
+    });
   }
 
   render() {
@@ -133,25 +158,37 @@ export default class XcodeCleaner extends Component {
           }
 
           return (
-            <View style={styles.row} key={'group' + idx}>
-              <View style={styles.rowLeft}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.description}>{item.description}</Text>
-                {progress && progressValue < 1 ? <ProgressViewIOS progress={progressValue} /> : null }
-              </View>
+            <View style={styles.section} key={'group' + idx}>
+              <TouchableOpacity onPress={() => this.toggleTab(item.key)}>
+                <View style={styles.row}>
 
-              <View style={styles.rowRight}>
-                <ActivityIndicator size='large' color='white' animating={true} />
-                {data.size ? (
-                <Text style={styles.size}> {data.size} </Text>
-                ) : null}
-                <Button title="Delete" />
-                {/*
-                <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>Delete</Text>
-                </TouchableOpacity>
-                */}
-              </View>
+                  <View style={styles.rowLeft}>
+                    <Text style={styles.name}>{item.name}</Text>
+                    <Text style={styles.description}>{item.description}</Text>
+                    {progress && progressValue < 1 ? <ProgressViewIOS progress={progressValue} /> : null }
+                  </View>
+
+                  <View style={styles.rowRight}>
+                    <ActivityIndicator size='large' color='white' animating={true} />
+                    {data.size ? (
+                    <Text style={styles.size}> {data.size} </Text>
+                    ) : null}
+                    <Button title="Delete" />
+                    {/*
+                    <TouchableOpacity style={styles.button}>
+                      <Text style={styles.buttonText}>Delete</Text>
+                    </TouchableOpacity>
+                    */}
+                  </View>
+                </View>  
+              </TouchableOpacity>
+
+              {this.state.tab === item.key ? (
+                <FlatList
+                  data={data.groups}
+                  renderItem={({item}) => this.renderItem(item)}
+                  />
+              ) : null}
             </View>  
           )
         })}
@@ -183,15 +220,17 @@ const styles = StyleSheet.create({
     flex: 1,
     // backgroundColor: backgroundColor,
   },
-  row: {
-    // backgroundColor: cardBackground,
+  section: {
     paddingHorizontal: 20,
     paddingVertical: 20,
     marginBottom: 1,
     borderBottomWidth: 1,
+    // backgroundColor: cardBackground,
     // borderWidth: 2,
     // borderColor: '#fff',
     // borderBottomColor: '#eee',
+  },
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
