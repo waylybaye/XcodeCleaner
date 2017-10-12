@@ -112,6 +112,10 @@ export default class XcodeCleaner extends Component {
       <View style={styles.listItem}>
         <Text style={styles.itemLabel}>{item.label}</Text>
         <Text style={styles.itemSize}>{item.size}</Text>
+        <Button 
+          title='' 
+          onPress={() => FileManager.revealInFinder(item.path)}
+          bezelStyle='helpButton' />
       </View>  
     )
   }
@@ -183,8 +187,13 @@ export default class XcodeCleaner extends Component {
                   </View>
 
                   <View style={styles.rowRight}>
+                    <Button 
+                      title='' 
+                      onPress={() => FileManager.revealInFinder(item.path)}
+                      bezelStyle='helpButton' />
                     {data.size ? (
-                    <Text style={styles.size}> {data.size} </Text>
+                    <Text style={styles.size} 
+                          > {data.size} </Text>
                     ) : null}
                     {/*
                     // <Button title="Delete" />

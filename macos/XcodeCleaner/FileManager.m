@@ -36,6 +36,15 @@ RCT_REMAP_METHOD(getHomeDirectory,
 //  resolve(NSLibraryDirectory());
 //}
 
+RCT_EXPORT_METHOD(revealInFinder: (NSString*) path
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+{
+  NSArray *fileURLs = [NSArray arrayWithObjects:[NSURL fileURLWithPath:path isDirectory:YES], nil];
+  [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:fileURLs];
+}
+
 
 RCT_EXPORT_METHOD(listDirectory: (NSString*) path
                   onlyDirectory:(BOOL) onlyDirectory
