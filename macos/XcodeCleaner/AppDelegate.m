@@ -72,4 +72,8 @@
   [[NSApp mainMenu] addItem:containerItem];
 }
 
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication {
+  return YES;
+}
+
 @end
