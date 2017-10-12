@@ -12,6 +12,8 @@
 #import <React/RCTConvert.h>
 
 #import "FileManager.h"
+#include <dirent.h>
+#include <sys/stat.h>
 
 
 @implementation FileManager
@@ -68,31 +70,8 @@ RCT_EXPORT_METHOD(listDirectory: (NSString*) path
     } else if (isDirectory) {
       [results addObject:fullPath];
     }
-    
   }];
   
-//  NSString* file;
-//  NSDirectoryEnumerator* enumerator = [[NSFileManager defaultManager] enumeratorAtPath:path];
-//  NSMutableArray *results = [[NSMutableArray alloc] init];
-//
-//  while (file = [enumerator nextObject])
-//  {
-//    BOOL isDirectory = NO;
-//    NSString* fullPath = [path stringByAppendingPathComponent:file];
-//
-//    if (!onlyDirectory){
-//      [results addObject:[path stringByAppendingPathComponent:file]];
-//      continue;
-//    }
-//
-//    [[NSFileManager defaultManager] fileExistsAtPath:fullPath
-//                                         isDirectory: &isDirectory];
-//    if (isDirectory)
-//    {
-//      [results addObject:[path stringByAppendingPathComponent:file]];
-//    }
-//
-//  }
   resolve(results);
 }
 
@@ -102,7 +81,10 @@ RCT_EXPORT_METHOD(getDirectorySize:(NSString *)path
                   rejecter:(RCTPromiseRejectBlock)reject
                   )
 {
-  resolve([NSNumber numberWithUnsignedLongLong:100*1024*1024]);
+  NSLog(@"calculate size %@", path);
+  unsigned long long size = [self getFolderSize:path];
+  NSLog(@"size %llul", size);
+  resolve([NSNumber numberWithUnsignedLongLong:size]);
 }
 
 
@@ -122,6 +104,67 @@ RCT_EXPORT_METHOD(trashDirectory: (NSString*)path
       NSLog(@"File %@ moved to %@", file, [newURLs objectForKey:file]);
     }
   }];
+}
+
+
+-(unsigned long long)getFolderSize : (NSString *)folderPath;
+
+{
+  char *dir = (char *)[folderPath fileSystemRepresentation];
+  DIR *cd;
+  
+  struct dirent *dirinfo;
+  int lastchar;
+  struct stat linfo;
+  static unsigned long long totalSize = 0;
+  
+  cd = opendir(dir);
+  
+  if (!cd) {
+    return 0;
+  }
+  
+  while ((dirinfo = readdir(cd)) != NULL) {
+    if (strcmp(dirinfo->d_name, ".") && strcmp(dirinfo->d_name, "..")) {
+      char *d_name;
+      
+      
+      d_name = (char*)malloc(strlen(dir)+strlen(dirinfo->d_name)+2);
+      
+      if (!d_name) {
+        //out of memory
+        closedir(cd);
+        exit(1);
+      }
+      
+      strcpy(d_name, dir);
+      lastchar = strlen(dir) - 1;
+      if (lastchar >= 0 && dir[lastchar] != '/')
+        strcat(d_name, "/");
+      strcat(d_name, dirinfo->d_name);
+      
+      if (lstat(d_name, &linfo) == -1) {
+        free(d_name);
+        continue;
+      }
+      if (S_ISDIR(linfo.st_mode)) {
+        if (!S_ISLNK(linfo.st_mode))
+          [self getFolderSize:[NSString stringWithCString:d_name encoding:NSUTF8StringEncoding]];
+        free(d_name);
+      } else {
+        if (S_ISREG(linfo.st_mode)) {
+          totalSize+=linfo.st_size;
+        } else {
+          free(d_name);
+        }
+      }
+    }
+  }
+  
+  closedir(cd);
+  
+  return totalSize;
+  
 }
 
 
