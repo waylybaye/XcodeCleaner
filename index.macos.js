@@ -25,9 +25,6 @@ import {
 
 const {FileManager} = NativeModules;
 const window = Dimensions.get('window');
-console.log('windowSize', window);
-console.log('windowSize', Dimensions.get('screen'));
-// console.log('windowSize', Dimensions.get('app'));
 
 function removePrefix(fullpath, path){
   let endingSlash = path[path.length - 1] === '/';
@@ -180,7 +177,9 @@ export default class XcodeCleaner extends Component {
     await this.calculateSubDirectory(xcode + 'DerivedData/', 'derivedData');
     await this.calculateSubDirectory(xcode + 'Archives/', 'archives');
     await this.calculateSubDirectory(developer + 'CoreSimulator/Devices/', 'simulator');
+  }
 
+  async componentWillUnmount(){
     await FileManager.stopAuthorization(developer);
   }
 
@@ -311,7 +310,7 @@ export default class XcodeCleaner extends Component {
                 ]}>
                   <View style={styles.rowLeft}>
                     <View style={styles.headerWithBadge}>
-                      <Text style={styles.name}>{group.name}</Text>
+                      <Text style={[styles.name, compactMode ? styles.compactName : null]}>{group.name}</Text>
                       {count ? <Button title={count + ''} bezelStyle='rounded' type='momentaryLight' /> : null}
                     </View>
                     {!compactMode && <Text style={styles.description}>{group.description}</Text> }
@@ -470,6 +469,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemLabel: {
+    color: secondaryTextColor,
     fontFamily: fontFamily,
     flex: 1,
     fontSize: 12,
@@ -497,6 +497,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 20,
     marginBottom: 10,
+  },
+  compactName: {
+    // color: secondaryTextColor,
+    // fontWeight: 'normal',
   },
   compactHeader: {
     // flex: 1,
