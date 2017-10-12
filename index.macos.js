@@ -260,7 +260,7 @@ export default class XcodeCleaner extends Component {
       {
         key: 'archives',
         name: 'Archives', 
-        description: "You can't debug deployed versions if you removed old archives.",
+        description: "You can't debug deployed versions if you remove old archives.",
       },
       {
         key: 'simulator',
