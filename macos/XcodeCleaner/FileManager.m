@@ -82,9 +82,7 @@ RCT_EXPORT_METHOD(getDirectorySize:(NSString *)path
                   )
 {
   NSLog(@"calculate size %@", path);
-  unsigned long long size = [self getFolderSize:path];
-  NSLog(@"size %llul", size);
-  resolve([NSNumber numberWithUnsignedLongLong:size]);
+  resolve([self sizeForFolderAtPath:path error:nil]);
 }
 
 
@@ -107,124 +105,33 @@ RCT_EXPORT_METHOD(trashDirectory: (NSString*)path
 }
 
 
--(unsigned long long)getFolderSize : (NSString *)folderPath;
 
+- (NSNumber *)sizeForFolderAtPath:(NSString *) source error:(NSError **)error
 {
-  char *dir = (char *)[folderPath fileSystemRepresentation];
-  DIR *cd;
-  
-  struct dirent *dirinfo;
-  int lastchar;
-  struct stat linfo;
-  static unsigned long long totalSize = 0;
-  
-  cd = opendir(dir);
-  
-  if (!cd) {
-    return 0;
-  }
-  
-  while ((dirinfo = readdir(cd)) != NULL) {
-    if (strcmp(dirinfo->d_name, ".") && strcmp(dirinfo->d_name, "..")) {
-      char *d_name;
-      
-      
-      d_name = (char*)malloc(strlen(dir)+strlen(dirinfo->d_name)+2);
-      
-      if (!d_name) {
-        //out of memory
-        closedir(cd);
-        exit(1);
-      }
-      
-      strcpy(d_name, dir);
-      lastchar = strlen(dir) - 1;
-      if (lastchar >= 0 && dir[lastchar] != '/')
-        strcat(d_name, "/");
-      strcat(d_name, dirinfo->d_name);
-      
-      if (lstat(d_name, &linfo) == -1) {
-        free(d_name);
-        continue;
-      }
-      if (S_ISDIR(linfo.st_mode)) {
-        if (!S_ISLNK(linfo.st_mode))
-          [self getFolderSize:[NSString stringWithCString:d_name encoding:NSUTF8StringEncoding]];
-        free(d_name);
-      } else {
-        if (S_ISREG(linfo.st_mode)) {
-          totalSize+=linfo.st_size;
-        } else {
-          free(d_name);
-        }
-      }
-    }
-  }
-  
-  closedir(cd);
-  
-  return totalSize;
-  
-}
-
-
--(unsigned long long) fastFolderSizeAtFSRef:(FSRef*) theFileRef
-{
-  FSIterator    thisDirEnum = NULL;
-  unsigned long long totalSize = 0;
-  
-  // Iterate the directory contents, recursing as necessary
-  if (FSOpenIterator(theFileRef, kFSIterateFlat, &thisDirEnum) ==
-      noErr)
+  NSArray * contents;
+  unsigned long long size = 0;
+  NSEnumerator * enumerator;
+  NSString * path;
+  BOOL isDirectory;
+  NSFileManager *fm = [NSFileManager defaultManager] ;
+  // Determine Paths to Add
+  if ([fm fileExistsAtPath:source isDirectory:&isDirectory] && isDirectory)
   {
-    const ItemCount kMaxEntriesPerFetch = 256;
-    ItemCount actualFetched;
-    FSRef    fetchedRefs[kMaxEntriesPerFetch];
-    FSCatalogInfo fetchedInfos[kMaxEntriesPerFetch];
-    
-    
-    OSErr fsErr = FSGetCatalogInfoBulk(thisDirEnum,
-                                       kMaxEntriesPerFetch, &actualFetched,
-                                       NULL, kFSCatInfoDataSizes |
-                                       kFSCatInfoNodeFlags, fetchedInfos,
-                                       fetchedRefs, NULL, NULL);
-    while ((fsErr == noErr) || (fsErr == errFSNoMoreItems))
-    {
-      ItemCount thisIndex;
-      for (thisIndex = 0; thisIndex < actualFetched; thisIndex++)
-      {
-        // Recurse if it's a folder
-        if (fetchedInfos[thisIndex].nodeFlags &
-            kFSNodeIsDirectoryMask)
-        {
-          totalSize += [self
-                        fastFolderSizeAtFSRef:&fetchedRefs[thisIndex]];
-        }
-        else
-        {
-          // add the size for this item
-          totalSize += fetchedInfos
-          [thisIndex].dataLogicalSize;
-        }
-      }
-      
-      if (fsErr == errFSNoMoreItems)
-      {
-        break;
-      }
-      else
-      {
-        // get more items
-        fsErr = FSGetCatalogInfoBulk(thisDirEnum,
-                                     kMaxEntriesPerFetch, &actualFetched,
-                                     NULL, kFSCatInfoDataSizes |
-                                     kFSCatInfoNodeFlags, fetchedInfos,
-                                     fetchedRefs, NULL, NULL);
-      }
-    }
-    FSCloseIterator(thisDirEnum);
+    contents = [fm subpathsAtPath:source];
   }
-  return totalSize;
+  else
+  {
+    contents = [NSArray array];
+  }
+  // Add Size Of All Paths
+  enumerator = [contents objectEnumerator];
+  while (path = [enumerator nextObject])
+  {
+    NSDictionary * fattrs = [fm attributesOfItemAtPath: [ source stringByAppendingPathComponent:path ] error:error];
+    size += [[fattrs objectForKey:NSFileSize] unsignedLongLongValue];
+  }
+  // Return Total Size in Bytes
+  return [ NSNumber numberWithUnsignedLongLong:size];
 }
 
 @end
