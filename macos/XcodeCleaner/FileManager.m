@@ -31,12 +31,29 @@ RCT_REMAP_METHOD(getHomeDirectory,
   resolve(NSHomeDirectory());
 }
 
-//RCT_REMAP_METHOD(getLibraryDirectory,
-//                 resolver:(RCTPromiseResolveBlock)resolve
-//                 rejecter:(RCTPromiseRejectBlock)reject)
-//{
-//  resolve(NSLibraryDirectory());
-//}
+
+RCT_EXPORT_METHOD(authSandbox: (NSString*) path
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+{
+  NSOpenPanel* panel = [NSOpenPanel openPanel];
+  panel.canChooseFiles = NO;
+  panel.allowsMultipleSelection = NO;
+  panel.directoryURL = [NSURL fileURLWithPath:path isDirectory:YES];
+  panel.prompt = @"Authorize";
+  
+  [panel beginWithCompletionHandler:^(NSInteger result) {
+    if (result == NSOKButton) {
+      NSMutableArray* filePaths = [[NSMutableArray alloc] init];
+      
+      for (NSURL* elemnet in [panel URLs]) {
+        [filePaths addObject:[elemnet path]];
+      }
+    }
+  }];
+}
+
 
 RCT_EXPORT_METHOD(parsePlist: (NSString*) path
                   resolver:(RCTPromiseResolveBlock)resolve
