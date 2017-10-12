@@ -244,7 +244,7 @@ export default class XcodeCleaner extends Component {
         <View style={[styles.row, styles.header]}>
           <Image 
             source={{uri: 'logo'}}  
-            style={{width: 42, height: 42}}/>
+            style={{width: 40, height: 40}}/>
           <Text style={styles.title}> Xcode Cleaner </Text>
         </View> 
 
