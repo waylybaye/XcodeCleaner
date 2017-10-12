@@ -13,46 +13,105 @@ import {
   View, 
   TouchableOpacity, 
   Button,
-  NativeModules
+  NativeModules,
+  ActivityIndicator,
 } from 'react-native';
 
 
 const {FileManager} = NativeModules;
 
+function removePrefix(fullpath, path){
+  let endingSlash = path[path.length - 1] === '/';
+  return fullpath.substr(endingSlash ? path.length : path.length + 1);
+}
 
 export default class XcodeCleaner extends Component {
+  constructor(props){
+    super(props);
+
+    this.state = {
+      groups: [],
+      progress: {},
+    };
+  }
+
   async componentDidMount(){
-    console.log('FileManager', FileManager);
+    this.calculateXcode();
+  }
+
+  updateProgress(section, current, total){
+    this.setState({
+      progress: {
+        ...this.state.progress,
+        [section]: [current, total]
+      },
+    })
+  }
+
+  async calculateSubDirectory(path, progressKey, labelGetter) {
+    console.log('calculate Path', path);
+    let folders = await FileManager.listDirectory(path, true);
+
+    let totalSize = 0;
+    let groups = [];
+    this.updateProgress(progressKey, 0, folders.length);
+
+    for(let i=0; i<folders.length; i++){
+      let folder = folders[i];
+      let label = removePrefix(folder, path);
+
+      if (labelGetter){
+        label = await labelGetter(folder);
+      }
+      let size = await FileManager.getDirectorySize(folder);
+      totalSize += size;
+
+      groups.push({
+        label: label,
+        size: size,
+      });
+
+      this.updateProgress(progressKey, i + 1, folders.length);
+    }
+
+    return groups;
+  }
+
+  async calculateXcode() {
     let home = await FileManager.getHomeDirectory();
-    console.log('home', home);
-    let xcode = `${home}/Library/Developer/`;
+    let developer = `${home}/Library/Developer/`;
+    let xcode = developer + 'Xcode/';
 
-    console.log('folders in ', xcode);
-    console.log(await FileManager.listDirectory(xcode, true));
-
-    let folder = xcode + 'Shared';
-    console.log('calculating folder size');
-    console.log(await FileManager.getDirectorySize(folder));
+    await this.calculateSubDirectory(xcode + 'iOS DeviceSupport/', 'deviceSupport');
+    await this.calculateSubDirectory(xcode + 'DerivedData/', 'derivedData');
+    await this.calculateSubDirectory(xcode + 'Archives/', 'archives');
+    await this.calculateSubDirectory(developer + 'CoreSimulator/Devices/', 'simulator');
   }
 
   render() {
     let groups = [
       {
         name: 'iOS DeviceSupport', 
+        key: 'deviceSupport',
         description: 'Clear this is safe.',
-        size: '40 G',
       },
       {
         name: 'DerivedData', 
+        key: 'derivedData',
         description: 'Clear this is safe.',
-        size: '40 G',
       },
-{
+      {
+        key: 'archives',
         name: 'Archives', 
         description: 'Clear this is safe.',
-        size: '40 G',
+      },
+      {
+        key: 'simulator',
+        name: 'CoreSimulator', 
+        description: 'Clear this is safe.',
       }
     ];
+
 
     return (
       <View style={styles.container}>
@@ -69,6 +128,7 @@ export default class XcodeCleaner extends Component {
             </View>
 
             <View style={styles.rowRight}>
+              <ActivityIndicator size='large' color='white' animating={true} />
               <Text style={styles.size}> 40 G </Text>
               <Button title="Delete" />
               {/*
@@ -113,9 +173,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     marginBottom: 1,
     borderBottomWidth: 1,
-    borderWidth: 2,
-    borderColor: '#fff',
-    borderBottomColor: '#eee',
+    // borderWidth: 2,
+    // borderColor: '#fff',
+    // borderBottomColor: '#eee',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
