@@ -46,6 +46,24 @@ function humanize(value, decimal) {
   return value.toFixed(decimal || 0) + byteUnits[i][0];
 }
 
+const CompactSection = ({group, count, size, onPress}) => {
+        // <View style={styles.compactCountBadge}>
+        //   <Text style={styles.compactCount}>{count}</Text>
+        // </View>
+
+  return(
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.compactSection}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <Text style={styles.compactHeader}>{group.name} </Text>
+        <Button title={count + ''} bezelStyle='rounded' type='momentaryLight' />
+        </View>
+        <Text style={styles.compactSize}>{humanize(size, 2)}</Text>
+      </View>
+    </TouchableOpacity>
+  ) 
+}
+
 
 export default class XcodeCleaner extends Component {
   constructor(props){
@@ -97,6 +115,10 @@ export default class XcodeCleaner extends Component {
 
       this.updateProgress(progressKey, i + 1, folders.length);
     }
+
+    groups.sort(function(a, b){
+      return b.size - a.size;
+    });
 
     this.setState({
       data: {
@@ -220,6 +242,14 @@ export default class XcodeCleaner extends Component {
             progressValue = total === 0 ? 1 : (current / total);
           }
           let compactMode = this.state.tab && this.state.tab !== group.key;
+          if (compactMode){
+            return <CompactSection 
+                    key={'compact-' + group.key}
+                    group={group} 
+                    count={data.groups ? data.groups.length : 0} 
+                    size={data.size}
+                    />
+          }
 
           return (
             <View style={[
@@ -296,6 +326,7 @@ const secondaryTextColor = '#888';
 const positive = 'blue';
 // const fontFamily = 'sans-serif';
 const fontFamily = 'HelveticaNeue';
+const marginHorizontal = 20;
 
 
 const styles = StyleSheet.create({
@@ -306,7 +337,7 @@ const styles = StyleSheet.create({
   },
   section: {
     borderRadius: 10,
-    marginHorizontal: 20,
+    marginHorizontal: marginHorizontal,
     paddingVertical: 20,
     // marginBottom: 1,
     // borderBottomWidth: 1,
@@ -393,6 +424,32 @@ const styles = StyleSheet.create({
   },
   inactiveTab: {
     height: 40,
+  },
+
+  compactSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: marginHorizontal,
+    borderWidth: 1,
+    alignItems: 'center',
+  },
+  compactHeader: {
+    // flex: 1,
+    fontSize: 18,
+    color: textColor,
+    fontFamily: fontFamily,
+  },
+  compactCountBadge: {
+    backgroundColor: '#ddd',
+    borderRadius: 10,
+    height: 20,
+  },
+  compactCount: {
+    fontSize: 18,
+    marginRight: 20,
+  },
+  compactSize: {
+    fontSize: 18,
   }
 });
 
