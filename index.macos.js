@@ -119,21 +119,32 @@ export default class XcodeCleaner extends Component {
       });
 
       this.updateProgress(progressKey, i + 1, folders.length);
+
+      groups.sort(function(a, b){
+        return b.size - a.size;
+      });
+
+      this.setState({
+        data: {
+          ...this.state.data,
+          [progressKey]: {
+            size: totalSize,
+            groups: groups,
+          }
+        }
+      })
     }
 
-    groups.sort(function(a, b){
-      return b.size - a.size;
-    });
 
-    this.setState({
-      data: {
-        ...this.state.data,
-        [progressKey]: {
-          size: totalSize,
-          groups: groups,
-        }
-      }
-    })
+    // this.setState({
+    //   data: {
+    //     ...this.state.data,
+    //     [progressKey]: {
+    //       size: totalSize,
+    //       groups: groups,
+    //     }
+    //   }
+    // })
 
     return groups;
   }
@@ -238,13 +249,13 @@ export default class XcodeCleaner extends Component {
       }
     ];
 
+          // <Image 
+          //   source={{uri: 'xc'}}  
+          //   style={{width: 40, height: 40}}/>
 
     return (
       <View style={styles.container}>
         <View style={[styles.row, styles.header]}>
-          <Image 
-            source={{uri: 'xc'}}  
-            style={{width: 40, height: 40}}/>
           <Text style={styles.title}> Xcode Cleaner </Text>
         </View> 
 
@@ -385,7 +396,6 @@ const styles = StyleSheet.create({
   rowLeft: {
     flex: 1,
     marginBottom: 10,
-    height: 50,
     justifyContent: 'space-between',
   },
   rowRight: {
@@ -398,6 +408,7 @@ const styles = StyleSheet.create({
     color: textColor,
     fontFamily: fontFamily,
     fontWeight: 'bold',
+    marginBottom: 10,
   },
   description: {
     fontSize: 12,
@@ -455,7 +466,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inactiveTab: {
-    height: 40,
+    height: 50,
   },
 
   compactSection: {

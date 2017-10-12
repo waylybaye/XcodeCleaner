@@ -96,10 +96,13 @@ RCT_EXPORT_METHOD(trashDirectory: (NSString*)path
     if (error != nil) {
       //do something about the error
       NSLog(@"%@", error);
+      reject(@"error", error.description, error);
+      return;
     }
     for (NSString *file in newURLs) {
       NSLog(@"File %@ moved to %@", file, [newURLs objectForKey:file]);
     }
+    resolve(nil);
   }];
 }
 
