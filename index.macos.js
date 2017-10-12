@@ -265,7 +265,7 @@ export default class XcodeCleaner extends Component {
       {
         key: 'simulator',
         name: 'CoreSimulator', 
-        description: "Your apps' data are stored here. You can use 'Reset content and Settings' in simulator too.",
+        description: "Your apps' data are stored here. I suggest you run `xcrun simctl delete unavailable` to safely reduce the size.",
       }
     ];
 
@@ -425,6 +425,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 12,
     color: secondaryTextColor,
+    lineHeight: 20,
   },
 
   size: {
