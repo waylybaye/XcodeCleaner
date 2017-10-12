@@ -250,22 +250,22 @@ export default class XcodeCleaner extends Component {
       {
         name: 'iOS DeviceSupport', 
         key: 'deviceSupport',
-        description: 'Only need to keep the latest iOS version.',
+        description: 'Only need to keep the latest iOS version, feed free to remove old versions.',
       },
       {
         name: 'DerivedData', 
         key: 'derivedData',
-        description: "It's safe to clear entire folder.",
+        description: "It's safe to clear the entire folder, you'll need to rebuild your projects.",
       },
       {
         key: 'archives',
         name: 'Archives', 
-        description: "You can't debug crash logs if you removed old archives.",
+        description: "You can't debug deployed versions if you removed old archives.",
       },
       {
         key: 'simulator',
         name: 'CoreSimulator', 
-        description: "It's safe to remove unused simulators.",
+        description: "Your apps' data are stored here. You can use 'Reset content and Settings' in simulator too.",
       }
     ];
 
