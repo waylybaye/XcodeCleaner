@@ -180,14 +180,22 @@ export default class XcodeCleaner extends Component {
     return (
       <View style={styles.listItem}>
         <Text style={styles.itemLabel}>{item.label}</Text>
-        <Text style={styles.itemSize}>{humanize(item.size)}</Text>
+        <Text style={styles.itemSize}>{humanize(item.size, 1)}</Text>
         <Button 
-          title='Reveal' 
+          // title='Reveal' 
+          style={{width: 30}}
+          image={{uri: 'search'}}
           onPress={() => FileManager.revealInFinder(item.path)}
-          // bezelStyle='helpButton' 
+          bezelStyle='circular' 
           />
         <Button 
-          title='Trash' 
+          style={{
+            width: 30,
+            margin: 0,
+          }}
+          title='' 
+          bezelStyle='circular' 
+          image={{uri: 'trash'}}
           onPress={() => this.trashDirectory(groupKey, item)}
            />
       </View>  
@@ -227,7 +235,10 @@ export default class XcodeCleaner extends Component {
 
     return (
       <View style={styles.container}>
-        <View style={{alignItems: 'center',}}>
+        <View style={[styles.row, styles.header]}>
+          <Image 
+            source={{uri: 'AppIcon.icns'}}  
+            style={{width: 60, height: 60}}/>
           <Text style={styles.title}> Xcode Cleaner </Text>
         </View> 
 
@@ -268,7 +279,7 @@ export default class XcodeCleaner extends Component {
                   <View style={styles.rowLeft}>
                     <View style={styles.headerWithBadge}>
                       <Text style={styles.name}>{group.name}</Text>
-                      {count && <Button title={count + ''} bezelStyle='rounded' type='momentaryLight' /> }
+                      {count ? <Button title={count + ''} bezelStyle='rounded' type='momentaryLight' /> : null}
                     </View>
                     {!compactMode && <Text style={styles.description}>{group.description}</Text> }
                   </View>
@@ -334,6 +345,7 @@ const secondaryTextColor = '#888';
 const positive = 'blue';
 // const fontFamily = 'sans-serif';
 const fontFamily = 'HelveticaNeue';
+// const fontFamily = 'Menlo';
 const marginHorizontal = 20;
 const sizeColor = 'rgb(255,78,93)';
 
@@ -345,6 +357,17 @@ const styles = StyleSheet.create({
     backgroundColor: backgroundColor,
     paddingBottom: 20,
   },
+  header: {
+    alignItems: 'center', 
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    marginHorizontal: marginHorizontal,
+    borderColor: sizeColor,
+    // borderRadius: 30,
+    // backgroundColor: 'green',
+    // borderBottomColor: '#000',
+  },
   section: {
     borderRadius: 10,
     marginHorizontal: marginHorizontal,
@@ -352,8 +375,8 @@ const styles = StyleSheet.create({
     // marginBottom: 1,
     // borderBottomWidth: 1,
     // backgroundColor: 'yellow',
-    backgroundColor: cardBackground,
-    // borderWidth: 2,
+    // backgroundColor: cardBackground,
+    // borderWidth: 1,
     // borderColor: '#fff',
     // borderBottomColor: '#eee',
   },
@@ -381,7 +404,6 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 12,
     color: secondaryTextColor,
-    fontFamily: fontFamily,
   },
 
   size: {
@@ -400,13 +422,12 @@ const styles = StyleSheet.create({
     color: positive,
   },
   title: {
-    fontSize: 16,
+    fontSize: 15,
     textAlign: 'center',
     margin: 20,
     fontWeight: 'bold',
     fontFamily: fontFamily,
-    // color: textColor,
-    color: '#333',
+    color: '#888',
   },
   list: {
     borderRadius: 8,
@@ -424,11 +445,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemLabel: {
+    fontFamily: fontFamily,
     flex: 1,
     fontSize: 12,
   },
   itemSize: {
     fontSize: 12,
+    marginRight: 10,
   },
   activeTab: {
     flex: 1,
