@@ -173,11 +173,15 @@ export default class XcodeCleaner extends Component {
     let developer = `${home}/Library/Developer/`;
     let xcode = developer + 'Xcode/';
 
+    console.log('authorize', developer);
+    await FileManager.authorize(developer);
+
     await this.calculateSubDirectory(xcode + 'iOS DeviceSupport/', 'deviceSupport');
     await this.calculateSubDirectory(xcode + 'DerivedData/', 'derivedData');
     await this.calculateSubDirectory(xcode + 'Archives/', 'archives');
     await this.calculateSubDirectory(developer + 'CoreSimulator/Devices/', 'simulator');
 
+    await FileManager.stopAuthorization(developer);
   }
 
   async trashDirectory(groupKey, item) {

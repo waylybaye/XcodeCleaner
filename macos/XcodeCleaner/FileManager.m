@@ -28,30 +28,142 @@ RCT_REMAP_METHOD(getHomeDirectory,
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
-  resolve(NSHomeDirectory());
+  NSLog(@"home %@", NSHomeDirectory());
+  NSString * username = NSUserName();
+//  resolve(NSHomeDirectory());
+  resolve([NSString stringWithFormat:@"/Users/%@", username]);
 }
 
 
-RCT_EXPORT_METHOD(authSandbox: (NSString*) path
+RCT_EXPORT_METHOD(authorize: (NSString*) path
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject
                   )
 {
-  NSOpenPanel* panel = [NSOpenPanel openPanel];
-  panel.canChooseFiles = NO;
-  panel.allowsMultipleSelection = NO;
-  panel.directoryURL = [NSURL fileURLWithPath:path isDirectory:YES];
-  panel.prompt = @"Authorize";
+  NSLog(@"try to auth %@", path);
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString* key = [@"bookmark:" stringByAppendingString:path];
+                              
+  NSData *bookmarkData = [defaults objectForKey:key];
   
-  [panel beginWithCompletionHandler:^(NSInteger result) {
-    if (result == NSOKButton) {
-      NSMutableArray* filePaths = [[NSMutableArray alloc] init];
-      
-      for (NSURL* elemnet in [panel URLs]) {
-        [filePaths addObject:[elemnet path]];
-      }
+  if (bookmarkData){
+    NSError* error = [self resolveBookmark:bookmarkData key:key];
+    
+    if (!error){
+      resolve(nil);
+    } else {
+      reject(@"error", error.description, error);
     }
-  }];
+    
+    return;
+  }
+  
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NSOpenPanel* panel = [NSOpenPanel openPanel];
+    panel.canChooseFiles = NO;
+    panel.allowsMultipleSelection = NO;
+    panel.canChooseDirectories = YES;
+    panel.directoryURL = [NSURL fileURLWithPath:path isDirectory:YES];
+    panel.prompt = @"Authorize";
+    
+    [panel beginWithCompletionHandler:^(NSInteger result) {
+      if (result == NSOKButton) {
+        NSURL *url = [[panel URLs] firstObject];
+        
+        NSData *bookmarkData =[url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
+        
+        [defaults setObject:bookmarkData forKey:key];
+        NSError* error = [self resolveBookmark:bookmarkData key:key];
+        
+        if (!error){
+          resolve(nil);
+        } else {
+          reject(@"error", error.description, error);
+        }
+      }
+    }];
+  });
+}
+
+RCT_EXPORT_METHOD(stopAuthorization: (NSString*) path
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+{
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSString* key = [@"bookmark:" stringByAppendingString:path];
+  NSData *bookmark = [defaults objectForKey:key];
+  
+  if (bookmark){
+    BOOL isStale;
+    NSError *error;
+    NSURL *url = [NSURL URLByResolvingBookmarkData:bookmark
+                                           options:NSURLBookmarkResolutionWithSecurityScope
+                                     relativeToURL:nil
+                               bookmarkDataIsStale:&isStale
+                                             error:&error];
+    if (!error){
+      [url stopAccessingSecurityScopedResource];
+    }
+  }
+}
+
+
+-(NSError *) resolveBookmark: (NSData *)bookmark
+                         key: (NSString *)key
+{
+  BOOL isStale;
+  NSError *error;
+  NSURL *url = [NSURL URLByResolvingBookmarkData:bookmark
+                                         options:NSURLBookmarkResolutionWithSecurityScope
+                                   relativeToURL:nil
+                             bookmarkDataIsStale:&isStale
+                                           error:&error];
+  if (error != nil) {
+    NSLog(@"Error resolving URL from bookmark: %@", error);
+    return error;
+    
+  } else if (isStale) {
+    //    if ([url startAccessingSecurityScopedResource]) {
+    NSLog(@"Attempting to renew bookmark for %@", url);
+    bookmark = [url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope
+             includingResourceValuesForKeys:nil
+                              relativeToURL:nil
+                                      error:&error];
+    
+    //      [url stopAccessingSecurityScopedResource];
+    if (error != nil) {
+      NSLog(@"Failed to renew bookmark: %@", error);
+      return error;
+    }
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:bookmark forKey:key];
+    NSLog(@"Bookmark renewed, yay.");
+    
+    return [self resolveBookmark:bookmark key:key];
+    
+    
+    //    } else {
+    //      NSLog(@"Could not start using the bookmarked url");
+    //      return nil;
+    //    }
+    
+  }
+  
+  NSLog(@"Bookmarked url resolved successfully!");
+  if (![url startAccessingSecurityScopedResource]){
+    NSMutableDictionary* details = [NSMutableDictionary dictionary];
+    [details setValue:@"startAccessingSecurityScopedResource failed" forKey:NSLocalizedDescriptionKey];
+    return [NSError errorWithDomain:@"XcodeCleaner" code:403 userInfo:details];
+  }
+  //    NSArray *contents = [NSFileManager.new contentsOfDirectoryAtPath:url.path error:&error];
+  //    [url stopAccessingSecurityScopedResource];
+  //    if (error != nil) {
+  //      NSLog(@"Error reading contents of bookmarked folder: %@", error);
+  //      return error;
+  //    }
+  //    NSLog(@"Contents of bookmarked folder: %@", contents);
+  return nil;
 }
 
 
@@ -82,8 +194,15 @@ RCT_EXPORT_METHOD(listDirectory: (NSString*) path
                   rejecter:(RCTPromiseRejectBlock)reject
                   )
 {
+  NSError *error;
   NSArray* dirs = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path
-                                                                      error:NULL];
+                                                                      error:&error];
+  if (error){
+    NSLog(@"@DEBUG error %@", error);
+    reject(@"error", error.description, error);
+    return;
+  }
+  
   NSMutableArray *results = [[NSMutableArray alloc] init];
   [dirs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
     NSString* filename = (NSString *)obj;
