@@ -55,8 +55,8 @@ const CompactSection = ({group, count, size, onPress}) => {
     <TouchableOpacity onPress={onPress}>
       <View style={styles.compactSection}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Text style={styles.compactHeader}>{group.name} </Text>
-        <Button title={count + ''} bezelStyle='rounded' type='momentaryLight' />
+          <Text style={styles.compactHeader}>{group.name} </Text>
+          <Button title={count + ''} bezelStyle='rounded' type='momentaryLight' />
         </View>
         <Text style={styles.compactSize}>{humanize(size, 2)}</Text>
       </View>
@@ -182,9 +182,10 @@ export default class XcodeCleaner extends Component {
         <Text style={styles.itemLabel}>{item.label}</Text>
         <Text style={styles.itemSize}>{humanize(item.size)}</Text>
         <Button 
-          title='' 
+          title='Reveal' 
           onPress={() => FileManager.revealInFinder(item.path)}
-          bezelStyle='helpButton' />
+          // bezelStyle='helpButton' 
+          />
         <Button 
           title='Trash' 
           onPress={() => this.trashDirectory(groupKey, item)}
@@ -223,7 +224,6 @@ export default class XcodeCleaner extends Component {
       }
     ];
 
-                    // <ActivityIndicator size='large' color='white' animating={true} />
 
     return (
       <View style={styles.container}>
@@ -241,12 +241,15 @@ export default class XcodeCleaner extends Component {
             let total = progress[1];
             progressValue = total === 0 ? 1 : (current / total);
           }
+
+          let count = data.groups ? data.groups.length : 0;
           let compactMode = this.state.tab && this.state.tab !== group.key;
           if (compactMode){
             return <CompactSection 
                     key={'compact-' + group.key}
+                    onPress={() => this.toggleTab(group.key)}
                     group={group} 
-                    count={data.groups ? data.groups.length : 0} 
+                    count={count} 
                     size={data.size}
                     />
           }
@@ -263,15 +266,20 @@ export default class XcodeCleaner extends Component {
                   styles.sectionHeader,
                 ]}>
                   <View style={styles.rowLeft}>
-                    <Text style={styles.name}>{group.name}</Text>
+                    <View style={styles.headerWithBadge}>
+                      <Text style={styles.name}>{group.name}</Text>
+                      {count && <Button title={count + ''} bezelStyle='rounded' type='momentaryLight' /> }
+                    </View>
                     {!compactMode && <Text style={styles.description}>{group.description}</Text> }
                   </View>
 
                   <View style={styles.rowRight}>
+                  {/* 
                     <Button 
                       title='' 
                       onPress={() => FileManager.revealInFinder(group.path)}
                       bezelStyle='helpButton' />
+                  */}
                     {data.size ? (
                     <Text style={styles.size}> {humanize(data.size)} </Text>
                     ) : null}
@@ -327,6 +335,7 @@ const positive = 'blue';
 // const fontFamily = 'sans-serif';
 const fontFamily = 'HelveticaNeue';
 const marginHorizontal = 20;
+const sizeColor = 'rgb(255,78,93)';
 
 
 const styles = StyleSheet.create({
@@ -334,6 +343,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     backgroundColor: backgroundColor,
+    paddingBottom: 20,
   },
   section: {
     borderRadius: 10,
@@ -355,18 +365,18 @@ const styles = StyleSheet.create({
   },
   rowLeft: {
     flex: 1,
+    marginBottom: 20,
   },
   rowRight: {
-    width: 150,
-    justifyContent: 'center',
+    // width: 150,
+    // justifyContent: 'center',
     alignItems: 'center',
   },
   name: {
     fontSize: 18,
     color: textColor,
-    // color: backgroundColor,
     fontFamily: fontFamily,
-    marginBottom: 15,
+    fontWeight: 'bold',
   },
   description: {
     fontSize: 12,
@@ -379,6 +389,7 @@ const styles = StyleSheet.create({
     color: positive,
     fontWeight: 'bold',
     marginBottom: 15,
+    color: sizeColor,
   },
   button: {
     borderWidth: 1,
@@ -398,9 +409,9 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   list: {
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#888',
+    borderRadius: 8,
+    // borderWidth: 1,
+    // borderColor: '#444',
   },
   listContainer: {
     backgroundColor: '#fff',
@@ -433,11 +444,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
   },
+  headerWithBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   compactHeader: {
     // flex: 1,
     fontSize: 18,
     color: textColor,
     fontFamily: fontFamily,
+    fontWeight: 'bold',
   },
   compactCountBadge: {
     backgroundColor: '#ddd',
@@ -450,6 +466,8 @@ const styles = StyleSheet.create({
   },
   compactSize: {
     fontSize: 18,
+    color: sizeColor,
+    fontWeight: 'bold',
   }
 });
 
