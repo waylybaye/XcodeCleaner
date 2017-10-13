@@ -79,6 +79,7 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
         NSData *bookmarkData =[url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
         
         NSString *key = [@"bookmark:" stringByAppendingString:url.path];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:bookmarkData forKey:key];
         NSError* error = [self resolveBookmark:bookmarkData key:key];
         
@@ -142,7 +143,6 @@ RCT_EXPORT_METHOD(stopAuthorization: (NSString*) path
                               relativeToURL:nil
                                       error:&error];
     
-    //      [url stopAccessingSecurityScopedResource];
     if (error != nil) {
       NSLog(@"Failed to renew bookmark: %@", error);
       return error;
