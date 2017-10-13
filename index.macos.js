@@ -274,7 +274,7 @@ export default class XcodeCleaner extends Component {
       {
         name: 'iOS DeviceSupport', 
         key: 'deviceSupport',
-        description: 'Only need to keep the latest iOS version, feed free to remove old versions.',
+        description: 'Only need to keep the latest iOS version, feel free to remove old versions.',
       },
       {
         name: 'DerivedData', 
