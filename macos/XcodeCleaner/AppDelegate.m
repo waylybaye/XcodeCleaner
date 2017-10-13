@@ -18,7 +18,7 @@
 -(id)init
 {
   if(self = [super init]) {
-    NSRect contentSize = NSMakeRect(200, 500, 450, 600); // initial size of main NSWindow
+    NSRect contentSize = NSMakeRect(200, 500, 550, 650); // initial size of main NSWindow
 
     self.window = [[NSWindow alloc] initWithContentRect:contentSize
                                              styleMask:

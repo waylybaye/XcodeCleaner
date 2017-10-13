@@ -339,7 +339,7 @@ export default class XcodeCleaner extends Component {
 
                   <View style={styles.rowRight}>
                     {data.size ? (
-                      <Text style={styles.size}> {humanize(data.size)} </Text>
+                      <Text style={styles.size}> {humanize(data.size || 0)} </Text>
                     ) : null}
                   </View>
                 </View>  
@@ -388,7 +388,8 @@ const textColor = '#333';
 const secondaryTextColor = '#888';
 const positive = 'blue';
 // const fontFamily = 'sans-serif';
-const fontFamily = 'HelveticaNeue';
+// const fontFamily = 'HelveticaNeue';
+// const fontFamily = '-apple-system';
 // const fontFamily = 'Menlo';
 const marginHorizontal = 20;
 const sizeColor = 'rgb(255,78,93)';
@@ -436,14 +437,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   rowRight: {
-    // width: 150,
-    // justifyContent: 'center',
-    alignItems: 'center',
+    width: 100,
+    alignItems: 'flex-end',
   },
   name: {
     fontSize: 18,
     color: textColor,
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily,
     fontWeight: 'bold',
   },
   description: {
@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 20,
     fontWeight: 'bold',
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily,
     color: '#888',
   },
   list: {
@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
     // flex: 1,
     fontSize: 18,
     color: textColor,
-    fontFamily: fontFamily,
+    // fontFamily: fontFamily,
     fontWeight: 'bold',
   },
   compactCountBadge: {
