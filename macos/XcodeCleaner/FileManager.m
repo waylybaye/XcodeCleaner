@@ -78,7 +78,7 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
         
         NSData *bookmarkData =[url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
         
-        NSString *key = [@"bookmark:" stringByAppendingString:url.path];
+        NSString *key = [@"bookmark:" stringByAppendingString:[url.path stringByAppendingString:@"/"]];
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:bookmarkData forKey:key];
         NSError* error = [self resolveBookmark:bookmarkData key:key];
