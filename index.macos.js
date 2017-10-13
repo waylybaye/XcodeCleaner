@@ -279,7 +279,7 @@ export default class XcodeCleaner extends Component {
       {
         name: 'DerivedData', 
         key: 'derivedData',
-        description: "It's safe to clear the entire folder, you'll need to rebuild your projects after removal.",
+        description: "It's safe to clear the entire folder, but you'll need to rebuild your projects after removal.",
       },
       {
         key: 'archives',
@@ -289,7 +289,7 @@ export default class XcodeCleaner extends Component {
       {
         key: 'simulator',
         name: 'CoreSimulator', 
-        description: "Your apps' data are stored here. I suggest you run `xcrun simctl delete unavailable` to safely reduce the size.",
+        description: "Your apps' data are stored here. I suggest you run `xcrun simctl delete unavailable` to reduce the size safely.",
       }
     ];
 
