@@ -279,7 +279,7 @@ export default class XcodeCleaner extends Component {
       {
         name: 'DerivedData', 
         key: 'derivedData',
-        description: "It's safe to clear the entire folder, you'll need to rebuild your projects.",
+        description: "It's safe to clear the entire folder, you'll need to rebuild your projects after removal.",
       },
       {
         key: 'archives',
