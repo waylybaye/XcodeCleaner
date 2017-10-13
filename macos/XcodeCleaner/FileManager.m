@@ -56,7 +56,7 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
     NSError* error = [self resolveBookmark:bookmarkData key:key];
     
     if (!error){
-      resolve(nil);
+      resolve(path);
     } else {
       reject(@"error", error.description, error);
     }
@@ -78,11 +78,12 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
         
         NSData *bookmarkData =[url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
         
+        NSString *key = [@"bookmark:" stringByAppendingString:url.path];
         [defaults setObject:bookmarkData forKey:key];
         NSError* error = [self resolveBookmark:bookmarkData key:key];
         
         if (!error){
-          resolve(nil);
+          resolve(url.path);
         } else {
           reject(@"error", error.description, error);
         }

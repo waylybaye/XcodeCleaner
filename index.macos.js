@@ -45,10 +45,6 @@ function humanize(value, decimal) {
 }
 
 const CompactSection = ({group, count, size, onPress}) => {
-        // <View style={styles.compactCountBadge}>
-        //   <Text style={styles.compactCount}>{count}</Text>
-        // </View>
-
   return(
     <TouchableOpacity onPress={onPress}>
       <View style={styles.compactSection}>
@@ -94,14 +90,22 @@ export default class XcodeCleaner extends Component {
   async calculateSubDirectory(path, progressKey, labelGetter) {
     console.log('calculate Path', path);
     let folders = [];
-
-    // try{
+    try{
       folders = await FileManager.listDirectory(path, true);
-    // } catch (e){
-    //   // throw error;
-    //   alert(e.message)
-    //   return;
-    // }
+
+    } catch (e){
+      this.updateProgress(progressKey, 0, 0);
+      this.setState({
+        data: {
+          ...this.state.data,
+          [progressKey]: {
+            size: 0,
+            groups: [],
+          }
+        }
+      });
+      return;
+    }
 
     let totalSize = 0;
     let groups = [];
@@ -178,18 +182,22 @@ export default class XcodeCleaner extends Component {
     let developer = `${home}/Library/Developer/`;
     let xcode = developer + 'Xcode/';
 
-    console.log('authorize', developer);
     try{
-      await FileManager.authorize(developer);
-
-      await this.calculateSubDirectory(xcode + 'iOS DeviceSupport/', 'deviceSupport');
-      await this.calculateSubDirectory(xcode + 'DerivedData/', 'derivedData');
-      await this.calculateSubDirectory(xcode + 'Archives/', 'archives');
-      await this.calculateSubDirectory(developer + 'CoreSimulator/Devices/', 'simulator');
-
+      let authorizedPath = await FileManager.authorize(developer) || '';
+      if (developer.substr(0, authorizedPath.length) !== authorizedPath){
+        alert(`You must authorize ${developer} permission.`)
+        return;
+      }
     } catch (e){
-      alert(e.message)
+      alert(e.userInfo ? e.userInfo.NSLocalizedDescription : e.message);
+      return;
     }
+
+    
+    await this.calculateSubDirectory(xcode + 'iOS DeviceSupport/', 'deviceSupport');
+    await this.calculateSubDirectory(xcode + 'DerivedData/', 'derivedData');
+    await this.calculateSubDirectory(xcode + 'Archives/', 'archives');
+    await this.calculateSubDirectory(developer + 'CoreSimulator/Devices/', 'simulator');
   }
 
   async componentWillUnmount(){
