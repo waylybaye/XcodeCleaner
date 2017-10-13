@@ -15,6 +15,12 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+NSError* newError(NSString * message){
+  NSMutableDictionary* details = [NSMutableDictionary dictionary];
+  [details setValue:message forKey:NSLocalizedDescriptionKey];
+  return [NSError errorWithDomain:@"XcodeCleaner" code:403 userInfo:details];
+}
+
 
 @implementation FileManager
 {
@@ -80,6 +86,10 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
         } else {
           reject(@"error", error.description, error);
         }
+        
+      } else {
+        NSError *error = newError(@"User cancelled authorization.");
+        reject(@"error", error.description, error);
       }
     }];
   });
@@ -141,13 +151,6 @@ RCT_EXPORT_METHOD(stopAuthorization: (NSString*) path
     NSLog(@"Bookmark renewed, yay.");
     
     return [self resolveBookmark:bookmark key:key];
-    
-    
-    //    } else {
-    //      NSLog(@"Could not start using the bookmarked url");
-    //      return nil;
-    //    }
-    
   }
   
   NSLog(@"Bookmarked url resolved successfully!");
@@ -156,13 +159,6 @@ RCT_EXPORT_METHOD(stopAuthorization: (NSString*) path
     [details setValue:@"startAccessingSecurityScopedResource failed" forKey:NSLocalizedDescriptionKey];
     return [NSError errorWithDomain:@"XcodeCleaner" code:403 userInfo:details];
   }
-  //    NSArray *contents = [NSFileManager.new contentsOfDirectoryAtPath:url.path error:&error];
-  //    [url stopAccessingSecurityScopedResource];
-  //    if (error != nil) {
-  //      NSLog(@"Error reading contents of bookmarked folder: %@", error);
-  //      return error;
-  //    }
-  //    NSLog(@"Contents of bookmarked folder: %@", contents);
   return nil;
 }
 
@@ -172,7 +168,6 @@ RCT_EXPORT_METHOD(parsePlist: (NSString*) path
                   rejecter:(RCTPromiseRejectBlock)reject
                   )
 {
-//  NSArray *fileURLs = [NSArray arrayWithObjects:[NSURL fileURLWithPath:path isDirectory:YES], nil];
   NSDictionary *theDict = [NSDictionary dictionaryWithContentsOfFile:path];
   resolve(theDict);
 }

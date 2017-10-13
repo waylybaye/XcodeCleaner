@@ -93,7 +93,15 @@ export default class XcodeCleaner extends Component {
 
   async calculateSubDirectory(path, progressKey, labelGetter) {
     console.log('calculate Path', path);
-    let folders = await FileManager.listDirectory(path, true);
+    let folders = [];
+
+    // try{
+      folders = await FileManager.listDirectory(path, true);
+    // } catch (e){
+    //   // throw error;
+    //   alert(e.message)
+    //   return;
+    // }
 
     let totalSize = 0;
     let groups = [];
@@ -171,12 +179,17 @@ export default class XcodeCleaner extends Component {
     let xcode = developer + 'Xcode/';
 
     console.log('authorize', developer);
-    await FileManager.authorize(developer);
+    try{
+      await FileManager.authorize(developer);
 
-    await this.calculateSubDirectory(xcode + 'iOS DeviceSupport/', 'deviceSupport');
-    await this.calculateSubDirectory(xcode + 'DerivedData/', 'derivedData');
-    await this.calculateSubDirectory(xcode + 'Archives/', 'archives');
-    await this.calculateSubDirectory(developer + 'CoreSimulator/Devices/', 'simulator');
+      await this.calculateSubDirectory(xcode + 'iOS DeviceSupport/', 'deviceSupport');
+      await this.calculateSubDirectory(xcode + 'DerivedData/', 'derivedData');
+      await this.calculateSubDirectory(xcode + 'Archives/', 'archives');
+      await this.calculateSubDirectory(developer + 'CoreSimulator/Devices/', 'simulator');
+
+    } catch (e){
+      alert(e.message)
+    }
   }
 
   async componentWillUnmount(){
@@ -465,12 +478,10 @@ const styles = StyleSheet.create({
   listItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 5,
     alignItems: 'center',
   },
   itemLabel: {
     color: secondaryTextColor,
-    fontFamily: fontFamily,
     flex: 1,
     fontSize: 12,
   },
