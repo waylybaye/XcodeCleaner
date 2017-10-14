@@ -1,5 +1,9 @@
 # Cleaner for Xcode
 
+
+![Screen Shot](./screenshot.png "Screenshot")
+
+
 This app helps you to make your Xcode faster by removing unwanted and deprecated files.
 
 You can run cleaner weekly or monthly to keep your developer folder health and to save more disk space.
@@ -22,12 +26,12 @@ Go to `Releases`
 
 HyperApp is a Docker Automation tool and SSH Terminal
 
-[![HyperApp on AppStore](https://linkmaker.itunes.apple.com/assets/shared/badges/zh-chs/appstore-lrg.svg "View on App Store")](https://itunes.apple.com/app/apple-store/id1179750280?pt=118260435&ct=guide&mt=8)
+[![HyperApp on AppStore](https://linkmaker.itunes.apple.com/assets/shared/badges/zh-chs/appstore-lrg.svg "View on App Store")](https://itunes.apple.com/app/apple-store/id1179750280?pt=118260435&ct=xc&mt=8)
 
 
 #### Ping: Monitor Linux servers on your phone
 
-[![Ping on AppStore](https://linkmaker.itunes.apple.com/assets/shared/badges/zh-chs/appstore-lrg.svg "View on App Store")](https://itunes.apple.com/app/ping-linux-monitor/id1276204653)
+[![Ping on AppStore](https://linkmaker.itunes.apple.com/assets/shared/badges/zh-chs/appstore-lrg.svg "View on App Store")](https://itunes.apple.com/app/ping-linux-monitor/id1276204653?ct=xc)
 
 
 ## Donation
