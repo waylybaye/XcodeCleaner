@@ -38,7 +38,7 @@
     [[self window] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameAqua]];
 
     [windowController setShouldCascadeWindows:NO];
-    [windowController setWindowFrameAutosaveName:@"XcodeCleaner"];
+    [windowController setWindowFrameAutosaveName:@"Cleaner for Xcode"];
 
     [windowController showWindow:self.window];
 
@@ -68,7 +68,7 @@
   NSMenuItem *containerItem = [[NSMenuItem alloc] init];
   NSMenu *rootMenu = [[NSMenu alloc] initWithTitle:@"" ];
   [containerItem setSubmenu:rootMenu];
-  [rootMenu addItemWithTitle:@"Quit XcodeCleaner" action:@selector(terminate:) keyEquivalent:@"q"];
+  [rootMenu addItemWithTitle:@"Quit Cleaner for Xcode" action:@selector(terminate:) keyEquivalent:@"q"];
   [[NSApp mainMenu] addItem:containerItem];
 }
 
