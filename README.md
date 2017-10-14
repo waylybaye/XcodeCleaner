@@ -1,13 +1,11 @@
-# XcodeCleaner
+# Cleaner for Xcode
 
 This app helps you to make your Xcode faster by removing unwanted and deprecated files.
 
 You can run cleaner weekly or monthly to keep your developer folder health and to save more disk space.
 
 
-XcodeCleaner 可以帮助你清除遗留以及废弃文件，从而极大的节省硬盘空间.
-
-你可以每月或者每周运行一次进行清理。
+这个应用可以帮助你清除遗留以及废弃文件，从而极大的节省硬盘空间. 你可以每月或者每周运行一次进行清理。
 
 
 
