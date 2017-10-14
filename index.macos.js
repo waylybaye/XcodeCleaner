@@ -1,6 +1,6 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * Xcode Cleaner by waylybaye
+ * https://github.com/waylybaye/XcodeCleaner
  * @flow
  */
 
@@ -24,7 +24,6 @@ import {
 
 
 const {FileManager} = NativeModules;
-const window = Dimensions.get('window');
 
 function removePrefix(fullpath, path){
   let endingSlash = path[path.length - 1] === '/';
@@ -42,20 +41,6 @@ function humanize(value, decimal) {
   } while (value > 1024);
 
   return value.toFixed(decimal || 0) + byteUnits[i][0];
-}
-
-const CompactSection = ({group, count, size, onPress}) => {
-  return(
-    <TouchableOpacity onPress={onPress}>
-      <View style={styles.compactSection}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={styles.compactHeader}>{group.name} </Text>
-          <Button title={count + ''} bezelStyle='rounded' type='momentaryLight' />
-        </View>
-        <Text style={styles.compactSize}>{humanize(size, 2)}</Text>
-      </View>
-    </TouchableOpacity>
-  ) 
 }
 
 
@@ -92,7 +77,6 @@ export default class XcodeCleaner extends Component {
     let folders = [];
     try{
       folders = await FileManager.listDirectory(path, true);
-
     } catch (e){
       this.updateProgress(progressKey, 0, 0);
       this.setState({
@@ -201,6 +185,8 @@ export default class XcodeCleaner extends Component {
   }
 
   async componentWillUnmount(){
+    let home = await FileManager.getHomeDirectory();
+    let developer = `${home}/Library/Developer/`;
     await FileManager.stopAuthorization(developer);
   }
 
@@ -301,7 +287,7 @@ export default class XcodeCleaner extends Component {
             source={{uri: 'AppIcon.icns'}}  
             style={{width: 40, height: 40}}/>
 
-          <Text style={styles.title}> Xcode Cleaner </Text>
+          <Text style={styles.title}> Cleaner for Xcode </Text>
         </View> 
 
         {groups.map((group, idx) => {
@@ -367,30 +353,13 @@ export default class XcodeCleaner extends Component {
   }
 }
 
-// const backgroundColor = 'rgb(17,29,38)';
-// const cardBackground = 'rgb(22,41,53)';
-// const textColor = 'rgb(251,252,253)';
-
-// const backgroundColor = '#878ECD';
-// const cardBackground = '#B9BBDF';
-// const textColor = '#878ecd';
-// const positive = 'rgb(0, 162,235)';
-
-// const backgroundColor = '#2E3B3E';
-// const cardBackground = '#50666B';
-// const textColor = '#F9B8BE';
-// const positive = '#FD6378';
 
 const backgroundColor = 'transparent'
-// const cardBackground= 'rgb(255,78,93)'
 const cardBackground= 'transparent'
 const textColor = '#333';
 const secondaryTextColor = '#888';
 const positive = 'blue';
-// const fontFamily = 'sans-serif';
 // const fontFamily = 'HelveticaNeue';
-// const fontFamily = '-apple-system';
-// const fontFamily = 'Menlo';
 const marginHorizontal = 20;
 const sizeColor = 'rgb(255,78,93)';
 
@@ -409,21 +378,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginHorizontal: marginHorizontal,
     borderColor: sizeColor,
-    // borderRadius: 30,
-    // backgroundColor: 'green',
-    // borderBottomColor: '#000',
   },
   section: {
     borderRadius: 10,
     marginHorizontal: marginHorizontal,
     paddingVertical: 20,
-    // marginBottom: 1,
-    // borderBottomWidth: 1,
-    // backgroundColor: 'yellow',
-    // backgroundColor: cardBackground,
-    // borderWidth: 1,
-    // borderColor: '#fff',
-    // borderBottomColor: '#eee',
   },
   sectionHeader: {
   },
@@ -521,27 +480,6 @@ const styles = StyleSheet.create({
     // color: secondaryTextColor,
     // fontWeight: 'normal',
   },
-  compactHeader: {
-    // flex: 1,
-    fontSize: 18,
-    color: textColor,
-    // fontFamily: fontFamily,
-    fontWeight: 'bold',
-  },
-  compactCountBadge: {
-    backgroundColor: '#ddd',
-    borderRadius: 10,
-    height: 20,
-  },
-  compactCount: {
-    fontSize: 18,
-    marginRight: 20,
-  },
-  compactSize: {
-    fontSize: 18,
-    color: sizeColor,
-    fontWeight: 'bold',
-  }
 });
 
 AppRegistry.registerComponent('XcodeCleaner', () => XcodeCleaner);
