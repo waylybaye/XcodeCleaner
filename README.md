@@ -19,8 +19,15 @@ Go to `Releases`
 
 
 
-## My Products
+## Build
 
+1. run `npm install` or `yarn` in root directory
+2. Disable `App Sandbox` in target Capabilities
+2. run `react-native-macos run-macos` to start the App
+
+
+
+## My Products
 
 #### HyperApp: The App Store for Linux
 
