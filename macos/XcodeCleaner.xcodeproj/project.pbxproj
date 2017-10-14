@@ -955,7 +955,7 @@
 				);
 				INFOPLIST_FILE = XcodeCleaner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -985,7 +985,7 @@
 				);
 				INFOPLIST_FILE = XcodeCleaner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				OTHER_CODE_SIGN_FLAGS = "--deep";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
