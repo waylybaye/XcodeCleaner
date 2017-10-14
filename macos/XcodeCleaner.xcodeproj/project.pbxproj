@@ -962,7 +962,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.hyperapp.XcodeCleaner;
-				PRODUCT_NAME = XcodeCleaner;
+				PRODUCT_NAME = "Cleaner for Xcode";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -991,7 +991,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.hyperapp.XcodeCleaner;
-				PRODUCT_NAME = XcodeCleaner;
+				PRODUCT_NAME = "Cleaner for Xcode";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
 				VERSIONING_SYSTEM = "apple-generic";
