@@ -11,9 +11,10 @@
 #import <AppKit/AppKit.h>
 #import <React/RCTConvert.h>
 
-#import "FileManager.h"
 #include <dirent.h>
 #include <sys/stat.h>
+#import "FileManager.h"
+
 
 NSError* newError(NSString * message){
   NSMutableDictionary* details = [NSMutableDictionary dictionary];
@@ -23,9 +24,6 @@ NSError* newError(NSString * message){
 
 
 @implementation FileManager
-{
-}
-
 
 RCT_EXPORT_MODULE()
 
@@ -36,7 +34,8 @@ RCT_REMAP_METHOD(getHomeDirectory,
 {
   NSLog(@"home %@", NSHomeDirectory());
   NSString * username = NSUserName();
-//  resolve(NSHomeDirectory());
+  // home directory is sandbox home which is incorrent
+  // resolve(NSHomeDirectory());
   resolve([NSString stringWithFormat:@"/Users/%@", username]);
 }
 
@@ -78,6 +77,7 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
         
         NSData *bookmarkData =[url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
         
+        // NOTE: url.path has no trailling /
         NSString *key = [@"bookmark:" stringByAppendingString:[url.path stringByAppendingString:@"/"]];
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:bookmarkData forKey:key];
@@ -136,7 +136,6 @@ RCT_EXPORT_METHOD(stopAuthorization: (NSString*) path
     return error;
     
   } else if (isStale) {
-    //    if ([url startAccessingSecurityScopedResource]) {
     NSLog(@"Attempting to renew bookmark for %@", url);
     bookmark = [url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope
              includingResourceValuesForKeys:nil
