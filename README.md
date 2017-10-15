@@ -15,8 +15,10 @@ You can run cleaner weekly or monthly to keep your developer folder health and t
 
 ## Download
 
-Go to `Releases`
+[![Download on App Store](https://www.apple.com/itunes/link/images/link-badge-appstore.png "View on App Store")
+](https://itunes.apple.com/app/cleaner-for-xcode/id1296084683) 
 
+Go to `Releases`
 
 
 ## Build
@@ -33,12 +35,12 @@ Go to `Releases`
 
 HyperApp is a Docker Automation tool and SSH Terminal
 
-[![HyperApp on AppStore](https://linkmaker.itunes.apple.com/assets/shared/badges/zh-chs/appstore-lrg.svg "View on App Store")](https://itunes.apple.com/app/apple-store/id1179750280?pt=118260435&ct=xc&mt=8)
+[![HyperApp on AppStore](https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg "View on App Store")](https://itunes.apple.com/app/apple-store/id1179750280?pt=118260435&ct=xc&mt=8)
 
 
 #### Ping: Monitor Linux servers on your phone
 
-[![Ping on AppStore](https://linkmaker.itunes.apple.com/assets/shared/badges/zh-chs/appstore-lrg.svg "View on App Store")](https://itunes.apple.com/app/ping-linux-monitor/id1276204653?ct=xc)
+[![Ping on AppStore](https://linkmaker.itunes.apple.com/assets/shared/badges/en-us/appstore-lrg.svg "View on App Store")](https://itunes.apple.com/app/ping-linux-monitor/id1276204653?ct=xc)
 
 
 ## Donation
