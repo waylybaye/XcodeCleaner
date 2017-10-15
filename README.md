@@ -44,3 +44,10 @@ HyperApp is a Docker Automation tool and SSH Terminal, [HyperApp on AppStore](ht
 
 [Ping on AppStore](https://itunes.apple.com/app/ping-linux-monitor/id1276204653?ct=xc)
 
+
+
+## FAQ
+
+#### 中国用户可能遇到的编译问题 (for Chinese users)
+
+npm/yarn 安装过程会在 npmjs.com 下载库，这个网络会比较慢。编译过程中会去 github 和 sourceforge 下载依赖库。所以你需要一个系统全局的科学上网环境。
