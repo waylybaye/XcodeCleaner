@@ -24,9 +24,11 @@ Cleaner for Xcode is available on Mac App Store now, you can get it using the li
 
 ## Build
 
-1. run `npm install` or `yarn` in root directory
-2. run `open macos/XcodeCleaner.xcodeproj`
-3. disable `App Sandbox` in target's `Capabilities`
+Make sure you have latest `node` and `npm or yarn`  and `watchman` installed, you can install them using `homebrew`
+
+1. Run `npm install` or `yarn` in proejct directory.
+2. Run `open macos/XcodeCleaner.xcodeproj` to open Xcode project.
+3. Disable `App Sandbox` in target's `Capabilities`.
 4. Run! 
 
 
