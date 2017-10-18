@@ -32,11 +32,7 @@ RCT_REMAP_METHOD(getHomeDirectory,
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
-  NSLog(@"home %@", NSHomeDirectory());
-  NSString * username = NSUserName();
-  // home directory is sandbox home which is incorrent
-  // resolve(NSHomeDirectory());
-  resolve([NSString stringWithFormat:@"/Users/%@", username]);
+   resolve(NSHomeDirectory());
 }
 
 
@@ -69,6 +65,7 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
     panel.allowsMultipleSelection = NO;
     panel.canChooseDirectories = YES;
     panel.directoryURL = [NSURL fileURLWithPath:path isDirectory:YES];
+    panel.message = @"Cleaner need be authorized to access your Developer directory for the first time. \n If your developer directory is not in standard location, you can choose the correct path in this panel.";
     panel.prompt = @"Authorize";
     
     [panel beginWithCompletionHandler:^(NSInteger result) {
