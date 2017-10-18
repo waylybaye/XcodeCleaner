@@ -62,27 +62,33 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
   NSLog(@"try to auth %@", path);
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
   NSString* key = [@"bookmark:" stringByAppendingString:path];
-                              
-  NSData *bookmarkData = [defaults objectForKey:key];
   
-  if (bookmarkData){
-    NSError* error = [self resolveBookmark:bookmarkData key:key];
+  if ([path length] != 0){
+    // User want to choose a directory mannually if path is blank
+    NSData *bookmarkData = [defaults objectForKey:key];
     
-    if (!error){
-      resolve(path);
-    } else {
-      reject(@"error", error.description, error);
+    if (bookmarkData){
+      NSError* error = [self resolveBookmark:bookmarkData key:key];
+      
+      if (!error){
+        resolve(path);
+      } else {
+        reject(@"error", error.description, error);
+      }
     }
-    
-    return;
   }
+
   
   dispatch_async(dispatch_get_main_queue(), ^{
     NSOpenPanel* panel = [NSOpenPanel openPanel];
     panel.canChooseFiles = NO;
     panel.allowsMultipleSelection = NO;
     panel.canChooseDirectories = YES;
-    panel.directoryURL = [NSURL fileURLWithPath:path isDirectory:YES];
+    
+    if ([path length] != 0){
+      panel.directoryURL = [NSURL fileURLWithPath:path isDirectory:YES];
+    }
+    
     panel.message = @"Cleaner need be authorized to access your Developer directory for the first time. \n If your developer directory is not in standard location, you can choose the correct path in this panel.";
     panel.prompt = @"Authorize";
     
@@ -90,15 +96,19 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
       if (result == NSOKButton) {
         NSURL *url = [[panel URLs] firstObject];
         
-        NSData *bookmarkData =[url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope includingResourceValuesForKeys:nil relativeToURL:nil error:NULL];
+        NSData *bookmarkData =[url bookmarkDataWithOptions:NSURLBookmarkCreationWithSecurityScope
+                            includingResourceValuesForKeys:nil
+                                             relativeToURL:nil
+                                                     error:NULL];
         
-        // NOTE: url.path has no trailling /
+        // NOTE: url.path has no trailling slash
         NSString *key = [@"bookmark:" stringByAppendingString:[url.path stringByAppendingString:@"/"]];
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:bookmarkData forKey:key];
         NSError* error = [self resolveBookmark:bookmarkData key:key];
         
         if (!error){
+          NSLog(@"chosen %@", url.path);
           resolve(url.path);
         } else {
           reject(@"error", error.description, error);

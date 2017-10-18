@@ -7,6 +7,7 @@
 import React, { Component } from 'react';
 
 import { 
+  AlertIOS,
   AppRegistry, 
   Dimensions,
   FlatList,
@@ -42,6 +43,11 @@ function humanize(value, decimal) {
 
   return value.toFixed(decimal || 0) + byteUnits[i][0];
 }
+
+const STRINGS = {
+  'xcode_not_found_title': 'Xcode not found',
+  'xcode_not_found_body': "No Xcode installation found in selected directory, it's usally at HOME/Library/Developer."
+};
 
 
 export default class XcodeCleaner extends Component {
@@ -161,9 +167,11 @@ export default class XcodeCleaner extends Component {
     return groups;
   }
 
-  async calculateXcode() {
+  async calculateXcode(chooseManaually) {
     let home = await FileManager.getHomeDirectory();
     let sandboxPrefix = '/Library/Containers/';
+    chooseManaually = true;
+
     if ( home.search(sandboxPrefix) ){
       // App is run in sandbox
       home = home.substr(0, home.indexOf(sandboxPrefix));
@@ -173,11 +181,7 @@ export default class XcodeCleaner extends Component {
     let authorizedPath = developer;
 
     try{
-      authorizedPath = await FileManager.authorize(developer) || '';
-      // if (developer.substr(0, authorizedPath.length) !== authorizedPath){
-      //   alert(`You must authorize ${developer} permission.`)
-      //   return;
-      // }
+      authorizedPath = (await FileManager.authorize(chooseManaually ? '' : developer) + '/') || '';
     } catch (e){
       alert(e.userInfo ? e.userInfo.NSLocalizedDescription : e.message);
       return;
@@ -187,7 +191,15 @@ export default class XcodeCleaner extends Component {
     let xcode = authorizedPath + 'Xcode/';
     let type = await FileManager.exists(xcode);
     if (type === 0){
-      alert('No Xcode installation found in chosen directory. \n You can choose another directory using "Choose Directory" in menu.');
+      AlertIOS.alert(
+        STRINGS.xcode_not_found_title,
+        STRINGS.xcode_not_found_body,
+        [
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          {text: 'Choose Directory ...', onPress: () => this.calculateXcode(true)},
+        ],
+      );
+
       return;
     }
 
