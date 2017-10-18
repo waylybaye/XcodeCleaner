@@ -170,7 +170,6 @@ export default class XcodeCleaner extends Component {
   async calculateXcode(chooseManaually) {
     let home = await FileManager.getHomeDirectory();
     let sandboxPrefix = '/Library/Containers/';
-    chooseManaually = true;
 
     if ( home.search(sandboxPrefix) ){
       // App is run in sandbox

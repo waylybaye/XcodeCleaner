@@ -75,6 +75,8 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
       } else {
         reject(@"error", error.description, error);
       }
+      
+      return;
     }
   }
 
