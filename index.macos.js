@@ -163,25 +163,32 @@ export default class XcodeCleaner extends Component {
 
   async calculateXcode() {
     let home = await FileManager.getHomeDirectory();
-    let developer = `${home}/Library/Developer/`;
-    let xcode = developer + 'Xcode/';
+    let sandboxPrefix = '/Library/Containers/';
+    if ( home.search(sandboxPrefix) ){
+      // App is run in sandbox
+      home = home.substr(0, home.indexOf(sandboxPrefix));
+    } 
+
+    let developer = `${home}/Library/Developer/no`;
+    let authorizedPath = developer;
 
     try{
-      let authorizedPath = await FileManager.authorize(developer) || '';
-      if (developer.substr(0, authorizedPath.length) !== authorizedPath){
-        alert(`You must authorize ${developer} permission.`)
-        return;
-      }
+      authorizedPath = await FileManager.authorize(developer) || '';
+      // if (developer.substr(0, authorizedPath.length) !== authorizedPath){
+      //   alert(`You must authorize ${developer} permission.`)
+      //   return;
+      // }
     } catch (e){
       alert(e.userInfo ? e.userInfo.NSLocalizedDescription : e.message);
       return;
     }
 
     
+    let xcode = authorizedPath + 'Xcode/';
     await this.calculateSubDirectory(xcode + 'iOS DeviceSupport/', 'deviceSupport');
     await this.calculateSubDirectory(xcode + 'DerivedData/', 'derivedData');
     await this.calculateSubDirectory(xcode + 'Archives/', 'archives');
-    await this.calculateSubDirectory(developer + 'CoreSimulator/Devices/', 'simulator');
+    await this.calculateSubDirectory(authorizedPath + 'CoreSimulator/Devices/', 'simulator');
   }
 
   async componentWillUnmount(){
