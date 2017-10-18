@@ -169,7 +169,7 @@ export default class XcodeCleaner extends Component {
       home = home.substr(0, home.indexOf(sandboxPrefix));
     } 
 
-    let developer = `${home}/Library/Developer/no`;
+    let developer = `${home}/Library/Developer/`;
     let authorizedPath = developer;
 
     try{
