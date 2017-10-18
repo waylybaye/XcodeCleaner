@@ -32,7 +32,25 @@ RCT_REMAP_METHOD(getHomeDirectory,
                  resolver:(RCTPromiseResolveBlock)resolve
                  rejecter:(RCTPromiseRejectBlock)reject)
 {
-   resolve(NSHomeDirectory());
+ resolve(NSHomeDirectory());
+}
+
+
+RCT_EXPORT_METHOD(exists: (NSString*) path
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject
+                  )
+{
+  BOOL isDirectory = NO;
+  BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory];
+  if (!exists){
+    resolve([NSNumber numberWithInt:0]);
+  } else if (isDirectory){
+    resolve([NSNumber numberWithInt:2]);
+  } else {
+    resolve([NSNumber numberWithInt:1]);
+
+  }
 }
 
 

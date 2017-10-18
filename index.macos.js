@@ -185,6 +185,12 @@ export default class XcodeCleaner extends Component {
 
     
     let xcode = authorizedPath + 'Xcode/';
+    let type = await FileManager.exists(xcode);
+    if (type === 0){
+      alert('No Xcode installation found in chosen directory. \n You can choose another directory using "Choose Directory" in menu.');
+      return;
+    }
+
     await this.calculateSubDirectory(xcode + 'iOS DeviceSupport/', 'deviceSupport');
     await this.calculateSubDirectory(xcode + 'DerivedData/', 'derivedData');
     await this.calculateSubDirectory(xcode + 'Archives/', 'archives');
