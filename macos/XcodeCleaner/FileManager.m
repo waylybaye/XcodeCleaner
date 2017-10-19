@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <Carbon/Carbon.h>
-#import <AppKit/AppKit.h>
 #import <React/RCTConvert.h>
 
 #include <dirent.h>
