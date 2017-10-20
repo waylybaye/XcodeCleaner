@@ -169,18 +169,24 @@ export default class XcodeCleaner extends Component {
 
   async calculateXcode(chooseManaually) {
     let home = await FileManager.getHomeDirectory();
+    console.log('home', home);
     let sandboxPrefix = '/Library/Containers/';
 
-    if ( home.search(sandboxPrefix) ){
+    if ( home.search(sandboxPrefix) !== -1 ){
       // App is run in sandbox
       home = home.substr(0, home.indexOf(sandboxPrefix));
     } 
 
     let developer = `${home}/Library/Developer/`;
+    console.log('develoepr', developer);
     let authorizedPath = developer;
 
     try{
-      authorizedPath = (await FileManager.authorize(chooseManaually ? '' : developer) + '/') || '';
+      authorizedPath = await FileManager.authorize(chooseManaually ? '' : developer) || '';
+      if (authorizedPath[authorizedPath.length - 1] !== '/'){
+        authorizedPath += '/';
+      }
+      console.log('authorizedPath', authorizedPath);
     } catch (e){
       alert(e.userInfo ? e.userInfo.NSLocalizedDescription : e.message);
       return;
