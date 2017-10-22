@@ -46,7 +46,7 @@ function humanize(value, decimal) {
 
 const STRINGS = {
   'xcode_not_found_title': 'Xcode not found',
-  'xcode_not_found_body': "No Xcode installation found in selected directory, it's usally at HOME/Library/Developer."
+  'xcode_not_found_body': "No Xcode installation found in selected directory, it's usually at HOME/Library/Developer."
 };
 
 
