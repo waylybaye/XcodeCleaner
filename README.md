@@ -18,7 +18,7 @@ You can run cleaner weekly or monthly to keep your developer folder health and t
 Cleaner for Xcode is available on Mac App Store now, you can get it using the link below. You can also build it by yourself, please refer to `Build` section.
 
 [![Download on App Store](https://www.apple.com/itunes/link/images/link-badge-appstore.png "View on App Store")
-](https://itunes.apple.com/app/cleaner-for-xcode/id1296084683) 
+](https://itunes.apple.com/app/cleaner-for-xcode/id1296084683)
 
 
 
@@ -29,7 +29,7 @@ Make sure you have latest `node` and `npm or yarn`  and `watchman` installed, yo
 1. Run `npm install` or `yarn` in proejct directory.
 2. Run `open macos/XcodeCleaner.xcodeproj` to open Xcode project.
 3. Disable `App Sandbox` in target's `Capabilities`.
-4. Run! 
+4. Run!
 
 
 ----
@@ -37,14 +37,18 @@ Make sure you have latest `node` and `npm or yarn`  and `watchman` installed, yo
 
 ## My Products
 
-#### HyperApp: The App Store for Linux
+#### HyperApp: The App Store for Linux / Linux 一键部署工具，包含数十个应用
 
-HyperApp is a Docker Automation tool and SSH Terminal, [HyperApp on AppStore](https://itunes.apple.com/app/apple-store/id1179750280?pt=118260435&ct=xc&mt=8)
+[HyperApp on  AppStore](https://itunes.apple.com/app/apple-store/id1179750280?pt=118260435&ct=xc&mt=8)
 
 
-#### Ping: Monitor Linux servers on your phone
+#### Ping: Monitor Linux servers on your phone / Linux 监控工具
 
-[Ping on AppStore](https://itunes.apple.com/app/ping-linux-monitor/id1276204653?ct=xc)
+[Ping on  AppStore](https://itunes.apple.com/app/apple-store/id1276204653?pt=118260435&ct=xc)
+
+
+#### Cloud Speed: One tap to test speed of cloud hosting servers / 全球VPS一键测速
+[Ping on  AppStore](https://itunes.apple.com/app/apple-store/id1299527944?pt=118260435&ct=xc&mt=8)
 
 
 
