@@ -37,18 +37,20 @@ Make sure you have latest `node` and `npm or yarn`  and `watchman` installed, yo
 
 ## My Products
 
-#### HyperApp: The App Store for Linux / Linux 一键部署工具，包含数十个应用
 
-[HyperApp on  AppStore](https://itunes.apple.com/app/apple-store/id1179750280?pt=118260435&ct=xc&mt=8)
+#### HyperApp:
 
-
-#### Ping: Monitor Linux servers on your phone / Linux 监控工具
-
-[Ping on  AppStore](https://itunes.apple.com/app/apple-store/id1276204653?pt=118260435&ct=xc)
+The App Store for Linux / Linux 一键部署工具，包含数十个应用 [ AppStore](https://itunes.apple.com/app/apple-store/id1179750280?pt=118260435&ct=xc&mt=8)
 
 
-#### Cloud Speed: One tap to test speed of cloud hosting servers / 全球VPS一键测速
-[Ping on  AppStore](https://itunes.apple.com/app/apple-store/id1299527944?pt=118260435&ct=xc&mt=8)
+#### Hyper Ping:
+
+Monitor Linux servers on your phone / Linux 监控工具 [ AppStore](https://itunes.apple.com/app/apple-store/id1276204653?pt=118260435&ct=xc)
+
+
+#### Cloud Speed:
+
+One tap to test speed of cloud hosting servers / 全球VPS一键测速]  [ AppStore](https://itunes.apple.com/app/apple-store/id1299527944?pt=118260435&ct=xc&mt=8)
 
 
 
