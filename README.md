@@ -38,6 +38,12 @@ Make sure you have latest `node` and `npm or yarn`  and `watchman` installed, yo
 ## My Products
 
 
+#### 熊猫吃短信：
+
+基于机器学习的垃圾短信过滤应用
+[ AppStore](https://itunes.apple.com/app/apple-store/id1319191852?pt=118260435&ct=xc&mt=8)
+
+
 #### HyperApp:
 
 The App Store for Linux / Linux 一键部署工具，包含数十个应用 [ AppStore](https://itunes.apple.com/app/apple-store/id1179750280?pt=118260435&ct=xc&mt=8)
@@ -59,3 +65,17 @@ One tap to test speed of cloud hosting servers / 全球VPS一键测速]  [ Ap
 #### 中国用户可能遇到的编译问题 (for Chinese users)
 
 npm/yarn 安装过程会在 npmjs.com 下载库，这个网络会比较慢。编译过程中会去 github 和 sourceforge 下载依赖库。所以你需要一个系统全局的科学上网环境。
+
+
+## LICENSE
+
+
+You are permitted to use this
+source code, with or without modification, in source or binary form, on
+your devices however you see fit.  You are not permitted to redistribute
+binaries of this source code, with or without modification.  In other
+words, you cannot put this application or any application derived from
+it, on the Apple App Store, Cydia, or any other binary-only distribution
+channel.
+
+
