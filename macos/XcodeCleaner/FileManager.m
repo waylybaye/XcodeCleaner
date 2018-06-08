@@ -63,7 +63,7 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
   NSString* key = [@"bookmark:" stringByAppendingString:path];
   
   if ([path length] != 0){
-    // User want to choose a directory mannually if path is blank
+    // User want to choose a directory manually if path is blank
     NSData *bookmarkData = [defaults objectForKey:key];
     
     if (bookmarkData){
@@ -102,7 +102,7 @@ RCT_EXPORT_METHOD(authorize: (NSString*) path
                                              relativeToURL:nil
                                                      error:NULL];
         
-        // NOTE: url.path has no trailling slash
+        // NOTE: url.path has no trailing slash
         NSString *key = [@"bookmark:" stringByAppendingString:[url.path stringByAppendingString:@"/"]];
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:bookmarkData forKey:key];
