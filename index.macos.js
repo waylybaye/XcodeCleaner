@@ -347,7 +347,7 @@ export default class XcodeCleaner extends Component {
                 ]}>
                   <View style={styles.rowLeft}>
                     <View style={styles.headerWithBadge}>
-                      <Text style={[styles.name, compactMode ? styles.compactName : null]}>{group.name}</Text>
+                      <Text style={styles.name}>{group.name}</Text>
                       {count ? <Button title={count + ''} bezelStyle='rounded' type='momentaryLight' /> : null}
                     </View>
                     {!compactMode && <Text style={styles.description}>{group.description}</Text> }
@@ -505,10 +505,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 20,
     marginBottom: 10,
-  },
-  compactName: {
-    // color: secondaryTextColor,
-    // fontWeight: 'normal',
   },
 });
 
